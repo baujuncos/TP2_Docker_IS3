@@ -79,7 +79,9 @@ INSERT INTO `inscripciones` VALUES
 (3,2,'2023-11-06','holaa'),
 (4,1,'2021-03-06','jajaja'),
 (1,2,'2021-03-06','que divertido'),
-(3,1,'2021-04-05',NULL);
+(3,1,'2021-04-05',NULL)
+(5,3,'2022-07-06','que divertido')
+;
 /*!40000 ALTER TABLE `inscripciones` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -112,7 +114,9 @@ LOCK TABLES `users` WRITE;
 INSERT INTO `users` VALUES (1,'pauliiortizz','Paulina','Ortiz Noseda','paulinaortizilr5@gmail.com','bangho123','administrador'),
                            (2,'baujuncos','Bautista','Juncos','baujuncos1205@gmail.com','23polo67','estudiante'),
                            (3,'belutreachii','Belen','Treachi','belentreachi@gmail.com','nicoybelu45','estudiante'),
-                           (4,'virrodriguez','Virginia','Rodriguez','virchu23@gmail.com','virdiosa67','estudiante');
+                           (4,'virrodriguez','Virginia','Rodriguez','virchu23@gmail.com','virdiosa67','estudiante'),
+                           (5,'magdanoseda','Magdalena','Noseda','maguinoseda@hotmail.com','iTAlia','administrador'),
+                           (6,'olivetosofi','Sofia','Oliveto','oliveto078@gmail.com','ferXxo','estudiante');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
