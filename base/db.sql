@@ -43,9 +43,22 @@ CREATE TABLE `cursos` (
 LOCK TABLES `cursos` WRITE;
 /*!40000 ALTER TABLE `cursos` DISABLE KEYS */;
 INSERT INTO `cursos` VALUES
-(1,'Curso dde Fotografia','2024-06-11','Fotografia y Creatividad',NULL,'Te enseñamos a sacar fotos'),
-(2,'Inteligencia Emocional','2024-07-11','Amor propio',NULL,'Aprender a autoconocerse'),
-(3,'Biodanza','2024-03-02','Mindfulnes',NULL,'Conociendo el plano astral terrenal');
+(1, 'Introducción a la Programación', '2024-06-01', 'Informática', 'introduccion_programacion.pdf', 'Curso introductorio sobre programación para principiantes.'),
+(2, 'Marketing Digital Avanzado', '2024-06-15', 'Marketing', 'marketing_digital_avanzado.pdf', 'Curso avanzado que cubre estrategias y tácticas de marketing digital.'),
+(3, 'Inglés Conversacional', '2024-07-01', 'Idiomas', 'ingles_conversacional.mp4', 'Curso diseñado para mejorar las habilidades de conversación en inglés.'),
+(4, 'Diseño Gráfico Profesional', '2024-07-15', 'Diseño', 'diseno_grafico_profesional.zip', 'Curso completo sobre diseño gráfico utilizando herramientas profesionales.'),
+(5, 'Finanzas Personales', '2024-08-01', 'Finanzas', NULL, 'Curso práctico para gestionar de manera efectiva las finanzas personales.'),
+(6, 'Cocina Mediterránea', '2024-08-15', 'Cocina', 'cocina_mediterranea_recetas.docx', 'Curso de cocina centrado en recetas saludables de la cocina mediterránea.'),
+(7, 'Desarrollo Web con HTML y CSS', '2024-09-01', 'Informática', 'desarrollo_web_html_css.pdf', 'Curso introductorio sobre desarrollo web utilizando HTML y CSS.'),
+(8, 'Gestión de Proyectos con Scrum', '2024-09-15', 'Negocios', 'gestion_proyectos_scrum.pptx', 'Curso práctico sobre metodologías ágiles de gestión de proyectos.'),
+(9, 'Fotografía Digital Básica', '2024-10-01', 'Arte', 'fotografia_digital_basica.jpg', 'Curso para principiantes que cubre los fundamentos de la fotografía digital.'),
+(10, 'Introducción a la Inteligencia Artificial', '2024-10-15', 'Tecnología', NULL, 'Curso introductorio que explora conceptos básicos de inteligencia artificial y sus aplicaciones.'),
+(11, 'Marketing en Redes Sociales', '2024-11-01', 'Marketing', 'marketing_redes_sociales.mp4', 'Curso avanzado sobre estrategias de marketing en diversas plataformas de redes sociales.'),
+(12, 'Dibujo y Pintura para Principiantes', '2024-11-15', 'Arte', 'dibujo_pintura_principiantes.docx', 'Curso diseñado para aquellos que desean aprender técnicas básicas de dibujo y pintura.'),
+(13, 'Programación en Python', '2024-12-01', 'Informática', 'programacion_python.zip', 'Curso completo sobre programación en Python, desde conceptos básicos hasta técnicas avanzadas.'),
+(14, 'Gestión del Tiempo y Productividad', '2024-12-15', 'Desarrollo Personal', NULL, 'Curso práctico para mejorar la gestión del tiempo y aumentar la productividad personal y profesional.'),
+(15, 'Nutrición y Dietética', '2025-01-01', 'Salud', 'nutricion_dietetica.pdf', 'Curso que aborda los principios básicos de la nutrición y ofrece pautas para mantener una dieta equilibrada.'),
+(16, 'Aprendizaje Automático con TensorFlow', '2025-01-15', 'Tecnología', 'aprendizaje_automatico_tensorflow.zip', 'Curso avanzado sobre aprendizaje automático utilizando la biblioteca TensorFlow de Google.');
 /*!40000 ALTER TABLE `cursos` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -75,12 +88,22 @@ CREATE TABLE `inscripciones` (
 LOCK TABLES `inscripciones` WRITE;
 /*!40000 ALTER TABLE `inscripciones` DISABLE KEYS */;
 INSERT INTO `inscripciones` VALUES
-(2,2,'2024-12-05','me gusta mucho comer!'),
-(3,2,'2023-11-06','holaa'),
-(4,1,'2021-03-06','jajaja'),
-(1,2,'2021-03-06','que divertido'),
-(3,1,'2021-04-05',NULL)
-(5,3,'2022-07-06','que divertido')
+(12, 1, '2024-06-01', 'Me gustaría aprender más sobre programación.'),
+(13, 2, '2024-06-15', 'Estoy interesado en ampliar mis conocimientos sobre marketing digital.'),
+(14, 3, '2024-07-01', 'Quiero mejorar mi habilidad para hablar inglés en conversaciones.'),
+(15, 4, '2024-07-15', 'Me apasiona el diseño gráfico y quiero perfeccionar mis habilidades.'),
+(16, 5, '2024-08-01', 'Necesito mejorar mi gestión financiera personal.'),
+(17, 6, '2024-08-15', 'Me encanta cocinar y quiero aprender más sobre la cocina mediterránea.'),
+(18, 7, '2024-09-01', 'Quiero empezar a desarrollar mis propias páginas web.'),
+(19, 8, '2024-09-15', 'Necesito mejorar la gestión de proyectos en mi empresa.'),
+(20, 9, '2024-10-01', 'Siempre he querido aprender más sobre fotografía digital.'),
+(21, 10, '2024-10-15', 'Estoy intrigado por el potencial de la inteligencia artificial.'),
+(22, 11, '2024-11-01', 'Quiero mejorar mi estrategia de marketing en redes sociales para mi negocio.'),
+(23, 12, '2024-11-15', 'El dibujo y la pintura siempre me han interesado.'),
+(24, 13, '2024-12-01', 'Quiero aprender programación en Python para expandir mis habilidades.'),
+(25, 14, '2024-12-15', 'Necesito mejorar mi gestión del tiempo y ser más productivo.'),
+(26, 15, '2025-01-01', 'Estoy interesado en aprender más sobre nutrición y dietética.'),
+(27, 16, '2025-01-15', 'Me gustaría adentrarme en el aprendizaje automático con TensorFlow.');
 ;
 /*!40000 ALTER TABLE `inscripciones` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -111,12 +134,34 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'pauliiortizz','Paulina','Ortiz Noseda','paulinaortizilr5@gmail.com','bangho123','administrador'),
-                           (2,'baujuncos','Bautista','Juncos','baujuncos1205@gmail.com','23polo67','estudiante'),
-                           (3,'belutreachii','Belen','Treachi','belentreachi@gmail.com','nicoybelu45','estudiante'),
-                           (4,'virrodriguez','Virginia','Rodriguez','virchu23@gmail.com','virdiosa67','estudiante'),
-                           (5,'magdanoseda','Magdalena','Noseda','maguinoseda@hotmail.com','iTAlia','administrador'),
-                           (6,'olivetosofi','Sofia','Oliveto','oliveto078@gmail.com','ferXxo','estudiante');
+INSERT INTO `users` VALUES
+(1,'pauliiortizz','Paulina','Ortiz Noseda','paulinaortizilr5@gmail.com','bangho123','administrador'),
+(2,'baujuncos','Bautista','Juncos','baujuncos1205@gmail.com','23polo67','estudiante'),
+(3,'belutreachii','Belen','Treachi','belentreachi@gmail.com','nicoybelu45','estudiante'),
+(4,'virrodriguez','Virginia','Rodriguez','virchu23@gmail.com','virdiosa67','estudiante'),
+(5,'magdanoseda','Magdalena','Noseda','maguinoseda@hotmail.com','iTAlia','administrador'),
+(6,'olivetosofi','Sofia','Oliveto','oliveto078@gmail.com','ferXxo','estudiante'),
+(7,'juanperez','Juan','Perez','juanperez@mail.com', 'tengohambre44', 'estudiante'),
+(8,'anitaagomeeez','Ana','Gomez','anagomez@mail.com','quierocomer','Estudiante'),
+(9,'carlitos4rodri','Carlos','Rodriguez','carlosrodriguez@mail.com','amoingenieria','administrador'),
+(10,'luchimartinez','Lucia','Martinez','luciamartinez@mail.com','livelaughlove','estudiante' ),
+(11,'mariitaa','Maria','Fernandez','mariafernandez@mail.com','soylomas','estudiante'),
+(16, 'peposanchez', 'Pedro', 'Sánchez', 'pedrosanchez@example.com', 'Sánchez7890', 'administrador'),
+(17, 'laurita', 'Laura', 'Rodríguez', 'laurarodriguez@example.com', 'Rodríguez123', 'estudiante'),
+(18, 'fernandezsooo', 'Sofía', 'Fernández', 'sofiafernandez@example.com', 'Fernández456', 'estudiante'),
+(19, 'gomezmiguelito', 'Miguel', 'Gómez', 'miguelgomez@example.com', 'Gómez789', 'estudiante'),
+(20, 'diazelena', 'Elena', 'Díaz', 'elenadiaz@example.com', 'Díaz0123', 'administrador'),
+(21, 'javi34alvarez', 'Javier', 'Alvarez', 'javieralvarez@example.com', 'Alvarez3456', 'estudiante'),
+(22, 'pauchii', 'Paula', 'Torres', 'paulatorres@example.com', 'Torres6789', 'estudiante'),
+(23, 'ruizdavid', 'Ruiz', 'davidruiz@example.com', 'Ruiz0123', 'administrador'),
+(24, 'santoscarmelita', 'Carmen', 'Santos', 'carmensantos@example.com', 'Santos4567', 'estudiante'),
+(25, 'alejimenez', 'Alejandro', 'Jiménez', 'alejandrojimenez@example.com', 'Jiménez8901', 'estudiante'),
+(26, 'morenorosi', 'Rosa', 'Moreno', 'rosamoreno@example.com', 'Moreno2345', 'administrador'),
+(27, 'hernandez44', 'Pablo', 'Hernández', 'pablohernandez@example.com', 'Hernández6789', 'estudiante'),
+(28, 'lugarcia', 'Luisa', 'García', 'luisagarcia@example.com', 'García0123', 'estudiante'),
+(29, 'vargasfer', 'Fernando', 'Vargas', 'fernandovargas@example.com', 'Vargas4567', 'estudiante'),
+(30, 'luchi_lopez', 'Lucía', 'López', 'lucialopez@example.com', 'López8901', 'administrador');
+
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
