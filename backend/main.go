@@ -1,14 +1,14 @@
 package main
 
 import (
-	"final/router"
-	"github.com/gin-gonic/gin"
+	"final/db"
+	"log"
+	"net/http"
 )
 
 func main() {
-	// ej. http://localhost:8080/users/login
+	db.GetDB()
 
-	engine := gin.New()
-	router.MapUrls(engine)
-	engine.Run(":8080")
+	log.Println("Server is running on port 8080")
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
