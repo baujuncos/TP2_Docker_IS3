@@ -16,6 +16,9 @@ func SetupRouter() *gin.Engine {
 	// Ruta para eliminar un curso
 	r.DELETE("/cursos/:id", cursos.DeleteCurso)
 
+	// Ruta para actualizar un curso
+	r.PUT("/cursos/:id", cursos.UpdateCurso)
+
 	return r
 }
 
