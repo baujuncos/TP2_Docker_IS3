@@ -1,6 +1,6 @@
 package cursos
 
-import "final/domain/inscripciones"
+import "backend/domain/inscripciones"
 
 type Curso struct {
 	IdCurso       int                         `gorm:"primary_key;column:Id_curso"`

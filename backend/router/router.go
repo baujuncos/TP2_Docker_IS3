@@ -1,23 +1,26 @@
-/*package router
-
-import "github.com/gin-gonic/gin"
-import "ProyectoArquiCompu1/controllers/users"
-
-func MapUrls(engine *gin.Engine) {
-	engine.POST("/users/login", users.Login)
-}*/
-
 package router
 
 import (
-	"backend/controllers"
+	"backend/controllers/cursos"
+	"backend/controllers/users"
+	"backend/db"
 	"github.com/gin-gonic/gin"
 )
 
 func SetupRouter() *gin.Engine {
 	r := gin.Default()
 
-	r.POST("/api/v1/login", controllers.Login)
+	// Ruta para el login
+	r.POST("/api/v1/login", users.Login)
+
+	// Ruta para eliminar un curso
+	r.DELETE("/cursos/:id", cursos.DeleteCurso)
 
 	return r
+}
+
+func main() {
+	db.InitDB() // Inicializar la base de datos antes de empezar el servidor
+	r := SetupRouter()
+	r.Run(":8080") // Por defecto corre en :8080
 }

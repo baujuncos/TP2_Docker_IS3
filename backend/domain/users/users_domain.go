@@ -1,6 +1,6 @@
 package users
 
-import "final/domain/inscripciones"
+import "backend/domain/inscripciones"
 
 type User struct {
 	IdUsuario     int                         `gorm:"primary_key;column:Id_usuario"`

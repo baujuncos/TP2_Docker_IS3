@@ -1,6 +1,7 @@
 package db
 
 import (
+	"backend/domain/cursos"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"log"
@@ -15,4 +16,10 @@ func InitDB() {
 	if err != nil {
 		log.Fatal("failed to connect database: ", err)
 	}
+}
+
+func DeleteCursoByID(cursoID string) error {
+	// Utiliza la estructura Curso del paquete domain
+	result := DB.Delete(&cursos.Curso{}, "id = ?", cursoID)
+	return result.Error
 }

@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"ProyectoArquiCompu1/services"
+	"backend/services"
 	"github.com/gin-gonic/gin"
 )
 
