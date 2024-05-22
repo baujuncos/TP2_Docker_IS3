@@ -10,14 +10,14 @@ func MapUrls(engine *gin.Engine) {
 package router
 
 import (
-	"backend/controllers"
+	"backend/controllers/users"
 	"github.com/gin-gonic/gin"
 )
 
 func SetupRouter() *gin.Engine {
 	r := gin.Default()
 
-	r.POST("/api/v1/login", controllers.Login)
+	r.POST("/users/login", users.Login)
 
 	return r
 }

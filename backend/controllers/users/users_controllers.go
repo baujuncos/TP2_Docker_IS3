@@ -1,19 +1,23 @@
-/*import (
-	usersModels "ProyectoArquiCompu1/domain/users"
-	usersServices "ProyectoArquiCompu1/services/users"
+package users
+
+import (
+	usersDomain "backend/domain/users"
+	usersServices "backend/services/users"
 	"github.com/gin-gonic/gin"
 )
 
 func Login(context *gin.Context) {
-	var loginRequest usersModels.LoginRequest
+	var loginRequest usersDomain.LoginRequest
 	context.BindJSON(&loginRequest)
 	response := usersServices.Login(loginRequest)
 	context.JSON(200, response)
-}*/
+}
 
+/*
 package controllers
 
 import (
+	"backend/services"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -33,3 +37,4 @@ func Login(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"token": token})
 }
+*/

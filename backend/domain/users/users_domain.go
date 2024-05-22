@@ -1,6 +1,8 @@
 package users
 
-import "final/domain/inscripciones"
+import (
+	"backend/domain/inscripciones"
+)
 
 type User struct {
 	IdUsuario     int                         `gorm:"primary_key;column:Id_usuario"`
@@ -14,7 +16,7 @@ type User struct {
 }
 
 type LoginRequest struct {
-	Username string `json:"username"`
+	Username string `gorm:"column:NombreUsuario"`
 	Password string `json:"password"`
 }
 

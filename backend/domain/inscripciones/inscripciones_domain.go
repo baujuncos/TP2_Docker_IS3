@@ -1,7 +1,9 @@
 package inscripciones
 
-import "final/domain/cursos"
-import "final/domain/users"
+import (
+	"backend/domain/cursos"
+	"backend/domain/users"
+)
 
 type Inscripcion struct {
 	IdUsuario   int    `gorm:"column:Id_usuario"`
