@@ -1,22 +1,42 @@
-package users
+package services
 
 import (
-	"github.com/gin-gonic/gin"
-	"net/http"
+	"errors"
+	"github.com/dgrijalva/jwt-go"
+	"time"
 )
 
-func Login(c *gin.Context) {
-	var creds services.Credentials
-	if err := c.BindJSON(&creds); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
-		return
+var jwtKey = []byte("my_secret_key")
+
+type Credentials struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+type Claims struct {
+	Username string `json:"username"`
+	jwt.StandardClaims
+}
+
+func Authenticate(creds Credentials) (string, error) {
+	// Aquí deberías validar las credenciales contra tu base de datos o cualquier otro sistema de autenticación
+	if creds.Username != "admin" || creds.Password != "password" {
+		return "", errors.New("invalid credentials")
 	}
 
-	token, err := services.Authenticate(creds)
+	expirationTime := time.Now().Add(5 * time.Minute)
+	claims := &Claims{
+		Username: creds.Username,
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: expirationTime.Unix(),
+		},
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenString, err := token.SignedString(jwtKey)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-		return
+		return "", err
 	}
 
-	c.JSON(http.StatusOK, gin.H{"token": token})
+	return tokenString, nil
 }

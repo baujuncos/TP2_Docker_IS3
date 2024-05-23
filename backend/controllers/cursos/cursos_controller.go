@@ -1,7 +1,6 @@
 package cursos
 
 import (
-	"backend/db"
 	cursosDomain "backend/domain/cursos"
 	cursosServices "backend/services/cursos"
 	"net/http"
@@ -13,7 +12,7 @@ import (
 func DeleteCurso(c *gin.Context) {
 	cursoID := c.Param("id")
 
-	err := db.DeleteCursoByID(cursoID)
+	err := cursosServices.DeleteCurso(cursoID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -21,7 +20,6 @@ func DeleteCurso(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"message": "Curso eliminado correctamente"})
 }
-
 func UpdateCurso(c *gin.Context) {
 	cursoID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {

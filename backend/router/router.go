@@ -2,7 +2,6 @@ package router
 
 import (
 	"backend/controllers/cursos"
-	"backend/controllers/users"
 	"backend/db"
 	"github.com/gin-gonic/gin"
 )
@@ -11,7 +10,7 @@ func SetupRouter() *gin.Engine {
 	r := gin.Default()
 
 	// Ruta para el login
-	r.POST("/api/v1/login", users.Login)
+	//r.POST("/api/v1/login", users.Login)
 
 	// Ruta para eliminar un curso
 	r.DELETE("/cursos/:id", cursos.DeleteCurso)

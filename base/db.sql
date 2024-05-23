@@ -153,14 +153,13 @@ INSERT INTO `users` VALUES
 (20, 'diazelena', 'Elena', 'Díaz', 'elenadiaz@example.com', 'Díaz0123', 'administrador'),
 (21, 'javi34alvarez', 'Javier', 'Alvarez', 'javieralvarez@example.com', 'Alvarez3456', 'estudiante'),
 (22, 'pauchii', 'Paula', 'Torres', 'paulatorres@example.com', 'Torres6789', 'estudiante'),
-(23, 'ruizdavid', 'Ruiz', 'davidruiz@example.com', 'Ruiz0123', 'administrador'),
-(24, 'santoscarmelita', 'Carmen', 'Santos', 'carmensantos@example.com', 'Santos4567', 'estudiante'),
-(25, 'alejimenez', 'Alejandro', 'Jiménez', 'alejandrojimenez@example.com', 'Jiménez8901', 'estudiante'),
-(26, 'morenorosi', 'Rosa', 'Moreno', 'rosamoreno@example.com', 'Moreno2345', 'administrador'),
-(27, 'hernandez44', 'Pablo', 'Hernández', 'pablohernandez@example.com', 'Hernández6789', 'estudiante'),
-(28, 'lugarcia', 'Luisa', 'García', 'luisagarcia@example.com', 'García0123', 'estudiante'),
-(29, 'vargasfer', 'Fernando', 'Vargas', 'fernandovargas@example.com', 'Vargas4567', 'estudiante'),
-(30, 'luchi_lopez', 'Lucía', 'López', 'lucialopez@example.com', 'López8901', 'administrador');
+(23, 'santoscarmelita', 'Carmen', 'Santos', 'carmensantos@example.com', 'Santos4567', 'estudiante'),
+(24, 'alejimenez', 'Alejandro', 'Jiménez', 'alejandrojimenez@example.com', 'Jiménez8901', 'estudiante'),
+(25, 'morenorosi', 'Rosa', 'Moreno', 'rosamoreno@example.com', 'Moreno2345', 'administrador'),
+(26, 'hernandez44', 'Pablo', 'Hernández', 'pablohernandez@example.com', 'Hernández6789', 'estudiante'),
+(27, 'lugarcia', 'Luisa', 'García', 'luisagarcia@example.com', 'García0123', 'estudiante'),
+(28, 'vargasfer', 'Fernando', 'Vargas', 'fernandovargas@example.com', 'Vargas4567', 'estudiante'),
+(29, 'luchi_lopez', 'Lucía', 'López', 'lucialopez@example.com', 'López8901', 'administrador');
 
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
