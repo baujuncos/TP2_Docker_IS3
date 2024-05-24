@@ -2,7 +2,9 @@ package db
 
 import (
 	"backend/domain/cursos"
+	"backend/domain/users"
 	"database/sql"
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"log"
@@ -24,6 +26,29 @@ func InitDB() {
 	if err != nil {
 		log.Fatal("failed to get sql.DB from gorm: ", err)
 	}
+}
+
+func HashPassword(password string) (string, error) {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return "", err
+	}
+	return string(hashedPassword), nil
+}
+
+func UpdateUserPasswords() error {
+	var userList []users.User
+	DB.Find(&userList)
+
+	for _, user := range userList { // Cambio de nombre de variable de user a user
+		hashedPassword, err := HashPassword(user.Contrasena)
+		if err != nil {
+			return err
+		}
+		DB.Model(&user).Update("Contrasena", hashedPassword)
+	}
+
+	return nil
 }
 
 func DeleteCursoByID(IdCurso string) error {
