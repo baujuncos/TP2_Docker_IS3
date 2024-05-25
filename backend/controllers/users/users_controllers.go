@@ -1,42 +1,37 @@
-package services
+package users
 
-import (
-	"errors"
-	"github.com/dgrijalva/jwt-go"
-	"time"
+/*import (
+	usersModels "ProyectoArquiCompu1/domain/users"
+	usersServices "ProyectoArquiCompu1/services/users"
+	"github.com/gin-gonic/gin"
 )
 
-var jwtKey = []byte("my_secret_key")
-
-type Credentials struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
+func Login(context *gin.Context) {
+	var loginRequest usersModels.LoginRequest
+	context.BindJSON(&loginRequest)
+	response := usersServices.Login(loginRequest)
+	context.JSON(200, response)
 }
 
-type Claims struct {
-	Username string `json:"username"`
-	jwt.StandardClaims
-}
+package controllers
 
-func Authenticate(creds Credentials) (string, error) {
-	// Aquí deberías validar las credenciales contra tu base de datos o cualquier otro sistema de autenticación
-	if creds.Username != "admin" || creds.Password != "password" {
-		return "", errors.New("invalid credentials")
+import (
+	"github.com/gin-gonic/gin"
+	"net/http"
+)
+
+func Login(c *gin.Context) {
+	var creds services.Credentials
+	if err := c.BindJSON(&creds); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
+		return
 	}
 
-	expirationTime := time.Now().Add(5 * time.Minute)
-	claims := &Claims{
-		Username: creds.Username,
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: expirationTime.Unix(),
-		},
-	}
-
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString(jwtKey)
+	token, err := services.Authenticate(creds)
 	if err != nil {
-		return "", err
+		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		return
 	}
 
-	return tokenString, nil
-}
+	c.JSON(http.StatusOK, gin.H{"token": token})
+}*/

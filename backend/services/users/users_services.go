@@ -1,6 +1,6 @@
 package users
 
-/*import "ProyectoArquiCompu1/domain/users"
+import "backend/domain/users"
 
 func Login(request users.LoginRequest) users.LoginResponse {
 
@@ -8,8 +8,9 @@ func Login(request users.LoginRequest) users.LoginResponse {
 	return users.LoginResponse{
 		Token: "abcdef123456",
 	}
-}*/
+}
 
+/*
 import (
 	"backend/db"
 	"backend/domain"
@@ -75,3 +76,4 @@ func Authenticate(creds Credentials) (string, error) {
 
 	return token, nil
 }
+*/

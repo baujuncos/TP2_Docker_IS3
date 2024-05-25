@@ -3,10 +3,9 @@ package cursos
 import (
 	cursosDomain "backend/domain/cursos"
 	cursosServices "backend/services/cursos"
+	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
-
-	"github.com/gin-gonic/gin"
 )
 
 func DeleteCurso(c *gin.Context) {
@@ -39,4 +38,19 @@ func UpdateCurso(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "Course updated successfully"})
+}
+
+func CreateCurso(c *gin.Context) {
+	var curso cursosDomain.Curso
+	if err := c.ShouldBindJSON(&curso); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if err := cursosServices.CreateCurso(curso); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Curso creado con éxito!"})
 }

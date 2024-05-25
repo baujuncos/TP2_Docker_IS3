@@ -1,9 +1,14 @@
 package services
 
-import "final"
+//import "backend/domain"
 
-func GetResult(input string) domain.Response {
-	return domain.Response{
-		Message: "Recibi este mensaje: " + input,
-	}
-}
+//import (
+///	"backend/domain"
+//	"final"
+//)
+
+//func GetResult(input string) domain.Response {
+//	return domain.Response{
+//		Message: "Recibi este mensaje: " + input,
+//	}
+//}

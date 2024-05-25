@@ -18,6 +18,8 @@ func SetupRouter() *gin.Engine {
 	// Ruta para actualizar un curso
 	r.PUT("/cursos/:id", cursos.UpdateCurso)
 
+	r.POST("/cursos", cursos.CreateCurso)
+
 	return r
 }
 

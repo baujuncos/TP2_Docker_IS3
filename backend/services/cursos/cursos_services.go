@@ -38,3 +38,8 @@ func UpdateCurso(cursoID int, updatedCurso cursos.Curso) error {
 
 	return db.DB.Save(&curso).Error
 }
+func CreateCurso(curso cursos.Curso) error {
+	// Aquí puedes agregar validaciones adicionales si es necesario
+	result := db.DB.Create(&curso)
+	return result.Error
+}
