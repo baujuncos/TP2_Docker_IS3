@@ -61,3 +61,41 @@ func DeleteInscripcionesByCursoID(cursoID string) error {
 	_, err := sqlDB.Exec(query, cursoID)
 	return err
 }
+
+type Database struct {
+	*gorm.DB
+}
+
+func GetCursosUsuario(userId int) ([]cursos.Curso, error) {
+	// Obtener los IDs de los cursos del usuario desde la tabla de inscripciones
+	var inscripciones []struct {
+		IdCurso int
+	}
+	if err := DB.Table("inscripciones").
+		Where("id_usuario = ?", userId).
+		Pluck("id_curso", &inscripciones).
+		Error; err != nil {
+		return nil, err
+	}
+
+	// Extraer los IDs de los cursos de la lista de inscripciones
+	var cursoIDs []int
+	for _, inscripcion := range inscripciones {
+		cursoIDs = append(cursoIDs, inscripcion.IdCurso)
+	}
+
+	// Buscar los cursos correspondientes a los IDs obtenidos
+	var cursos []cursos.Curso
+	if err := DB.Where("id_curso IN ?", cursoIDs).Find(&cursos).Error; err != nil {
+		return nil, err
+	}
+
+	// Cargar explícitamente los usuarios asociados a cada curso
+	for i, curso := range cursos {
+		if err := DB.Model(&curso).Association("Usuarios").Find(&cursos[i].Usuarios); err != nil {
+			return nil, err
+		}
+	}
+
+	return cursos, nil
+}

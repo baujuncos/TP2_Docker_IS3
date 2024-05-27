@@ -37,7 +37,7 @@ func UpdateCurso(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Course updated successfully"})
+	c.JSON(http.StatusOK, gin.H{"message": "Curso editado correctamente"})
 }
 
 func CreateCurso(c *gin.Context) {
@@ -52,5 +52,5 @@ func CreateCurso(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Curso creado con éxito!"})
+	c.JSON(http.StatusOK, gin.H{"message": "Curso creado correctamente"})
 }

@@ -1,7 +1,7 @@
 package users
 
 type User struct {
-	IdUsuario     int    `gorm:"primary_key;column:Id_usuario"`
+	IdUsuario     int    `gorm:"primary_key;column:Id_usuario;autoIncrement"`
 	NombreUsuario string `gorm:"column:Nombre_Usuario"`
 	Nombre        string `gorm:"column:Nombre"`
 	Apellido      string `gorm:"column:Apellido"`
