@@ -2,9 +2,7 @@ package db
 
 import (
 	"backend/domain/cursos"
-	"backend/domain/users"
 	"database/sql"
-	"golang.org/x/crypto/bcrypt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"log"
@@ -28,29 +26,6 @@ func InitDB() {
 	}
 }
 
-func HashPassword(password string) (string, error) {
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	if err != nil {
-		return "", err
-	}
-	return string(hashedPassword), nil
-}
-
-func UpdateUserPasswords() error {
-	var userList []users.User
-	DB.Find(&userList)
-
-	for _, user := range userList { // Cambio de nombre de variable de user a user
-		hashedPassword, err := HashPassword(user.Contrasena)
-		if err != nil {
-			return err
-		}
-		DB.Model(&user).Update("Contrasena", hashedPassword)
-	}
-
-	return nil
-}
-
 func DeleteCursoByID(IdCurso string) error {
 	result := DB.Delete(&cursos.Curso{}, "Id_curso = ?", IdCurso)
 	return result.Error
@@ -62,39 +37,41 @@ func DeleteInscripcionesByCursoID(cursoID string) error {
 	return err
 }
 
-type Database struct {
-	*gorm.DB
-}
-
 func GetCursosUsuario(userId int) ([]cursos.Curso, error) {
 	// Obtener los IDs de los cursos del usuario desde la tabla de inscripciones
 	var inscripciones []struct {
-		IdCurso int
+		IdCurso int `gorm:"column:Id_curso"`
 	}
 	if err := DB.Table("inscripciones").
-		Where("id_usuario = ?", userId).
-		Pluck("id_curso", &inscripciones).
+		Where("Id_usuario = ?", userId).
+		Pluck("Id_curso", &inscripciones).
 		Error; err != nil {
+		log.Printf("Error al obtener inscripciones del usuario: %v\n", err)
 		return nil, err
 	}
 
 	// Extraer los IDs de los cursos de la lista de inscripciones
 	var cursoIDs []int
 	for _, inscripcion := range inscripciones {
+		log.Printf("Inscripción encontrada: %+v\n", inscripcion)
 		cursoIDs = append(cursoIDs, inscripcion.IdCurso)
+	}
+
+	if len(cursoIDs) == 0 {
+		log.Println("El usuario no está inscrito en ningún curso")
+		return []cursos.Curso{}, nil
 	}
 
 	// Buscar los cursos correspondientes a los IDs obtenidos
 	var cursos []cursos.Curso
-	if err := DB.Where("id_curso IN ?", cursoIDs).Find(&cursos).Error; err != nil {
+	if err := DB.Where("Id_curso IN ?", cursoIDs).Find(&cursos).Error; err != nil {
+		log.Printf("Error al obtener los cursos: %v\n", err)
 		return nil, err
 	}
 
-	// Cargar explícitamente los usuarios asociados a cada curso
-	for i, curso := range cursos {
-		if err := DB.Model(&curso).Association("Usuarios").Find(&cursos[i].Usuarios); err != nil {
-			return nil, err
-		}
+	// Verificar que los datos se han obtenido correctamente
+	for _, curso := range cursos {
+		log.Printf("Curso obtenido: %+v\n", curso)
 	}
 
 	return cursos, nil

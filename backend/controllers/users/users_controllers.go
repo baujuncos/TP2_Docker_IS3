@@ -3,6 +3,7 @@ package users
 import (
 	"backend/db"
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
 	"strconv"
 )
@@ -19,6 +20,7 @@ func ListarCursosUsuario(c *gin.Context) {
 	// Consultar la base de datos para obtener los cursos del usuario
 	cursosUsuario, err := db.GetCursosUsuario(userId)
 	if err != nil {
+		log.Printf("Error al obtener los cursos del usuario: %v\n", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error al obtener los cursos del usuario"})
 		return
 	}
