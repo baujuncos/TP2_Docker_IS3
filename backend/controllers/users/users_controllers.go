@@ -29,11 +29,7 @@ func ListarCursosUsuario(c *gin.Context) {
 	c.JSON(http.StatusOK, cursosUsuario)
 }
 
-/*import (
-	usersModels "ProyectoArquiCompu1/domain/users"
-	usersServices "ProyectoArquiCompu1/services/users"
-	"github.com/gin-gonic/gin"
-)
+/*
 
 func Login(context *gin.Context) {
 	var loginRequest usersModels.LoginRequest
