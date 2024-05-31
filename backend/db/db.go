@@ -1,7 +1,7 @@
 package db
 
 import (
-	"backend/domain/cursos"
+	"backend/dao"
 	"database/sql"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -12,7 +12,7 @@ var DB *gorm.DB
 var sqlDB *sql.DB
 
 func InitDB() {
-	dsn := "root:RaTa8855@tcp(127.0.0.1:3306)/pbbv?charset=utf8mb3&parseTime=True&loc=Local"
+	dsn := "root:ladrillo753@tcp(127.0.0.1:3306)/pbbv?charset=utf8mb3&parseTime=True&loc=Local"
 	var err error
 	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
@@ -27,7 +27,7 @@ func InitDB() {
 }
 
 func DeleteCursoByID(IdCurso string) error {
-	result := DB.Delete(&cursos.Curso{}, "Id_curso = ?", IdCurso)
+	result := DB.Delete(&dao.Curso{}, "Id_curso = ?", IdCurso)
 	return result.Error
 }
 
@@ -37,7 +37,7 @@ func DeleteInscripcionesByCursoID(cursoID string) error {
 	return err
 }
 
-func GetCursosUsuario(userId int) ([]cursos.Curso, error) {
+func GetCursosUsuario(userId int) ([]dao.Curso, error) {
 	// Obtener los IDs de los cursos del usuario desde la tabla de inscripciones
 	var inscripciones []struct {
 		IdCurso int `gorm:"column:Id_curso"`
@@ -59,11 +59,11 @@ func GetCursosUsuario(userId int) ([]cursos.Curso, error) {
 
 	if len(cursoIDs) == 0 {
 		log.Println("El usuario no está inscrito en ningún curso")
-		return []cursos.Curso{}, nil
+		return []dao.Curso{}, nil
 	}
 
 	// Buscar los cursos correspondientes a los IDs obtenidos
-	var cursos []cursos.Curso
+	var cursos []dao.Curso
 	if err := DB.Where("Id_curso IN ?", cursoIDs).Find(&cursos).Error; err != nil {
 		log.Printf("Error al obtener los cursos: %v\n", err)
 		return nil, err

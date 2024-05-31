@@ -1,8 +1,8 @@
 package cursos
 
 import (
-	cursosDomain "backend/domain/cursos"
-	cursosServices "backend/services/cursos"
+	cursosDomain "backend/dao"
+	cursosServices "backend/services"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"

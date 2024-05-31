@@ -1,4 +1,4 @@
-package inscripciones
+package services
 
 import (
 	"backend/db"

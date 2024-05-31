@@ -1,15 +1,14 @@
-package cursos
+package services
 
 import (
+	"backend/dao"
 	"backend/db"
-	"backend/domain/cursos"
-	"backend/services/inscripciones"
 	"log"
 )
 
 func DeleteCurso(cursoID string) error {
 	// Primero eliminamos las inscripciones asociadas al curso
-	err := inscripciones.DeleteInscripcionesByCursoID(cursoID)
+	err := DeleteInscripcionesByCursoID(cursoID)
 	if err != nil {
 		return err
 	}
@@ -18,8 +17,8 @@ func DeleteCurso(cursoID string) error {
 	return db.DeleteCursoByID(cursoID)
 }
 
-func UpdateCurso(cursoID int, updatedCurso cursos.Curso) error {
-	var curso cursos.Curso
+func UpdateCurso(cursoID int, updatedCurso dao.Curso) error {
+	var curso dao.Curso
 	if err := db.DB.First(&curso, cursoID).Error; err != nil {
 		log.Printf("Error finding course: %v", err)
 		return err
@@ -38,7 +37,7 @@ func UpdateCurso(cursoID int, updatedCurso cursos.Curso) error {
 
 	return db.DB.Save(&curso).Error
 }
-func CreateCurso(curso cursos.Curso) error {
+func CreateCurso(curso dao.Curso) error {
 	// Aquí puedes agregar validaciones adicionales si es necesario
 	result := db.DB.Create(&curso)
 	return result.Error
