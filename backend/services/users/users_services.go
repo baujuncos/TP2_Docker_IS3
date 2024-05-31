@@ -1,11 +1,13 @@
 package users
 
-import "backend/domain/users"
+import (
+	"backend/domain"
+)
 
-func Login(request users.LoginRequest) users.LoginResponse {
+func Login(request domain.LoginRequest) domain.LoginResponse {
 
 	//Validar contra la base de datos
-	return users.LoginResponse{
+	return domain.LoginResponse{
 		Token: "abcdef123456",
 	}
 }
