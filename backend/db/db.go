@@ -81,7 +81,7 @@ func GetCursosUsuario(userId int) ([]dao.Curso, error) {
 func GetUsuarioByUsername(username string) (dao.User, error) {
 	var usuario dao.User
 
-	result := DB.Where("NombreUsuario = ?", username).First(&usuario)
+	result := DB.Where("Nombre_Usuario = ?", username).First(&usuario)
 
 	if result.Error != nil {
 		return dao.User{}, fmt.Errorf("not found user with username: %s", username)
