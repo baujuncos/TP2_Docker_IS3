@@ -7,13 +7,14 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"log"
+	"time"
 )
 
 var DB *gorm.DB
 var sqlDB *sql.DB
 
 func InitDB() {
-	dsn := "root:ladrillo753@tcp(127.0.0.1:3306)/pbbv?charset=utf8mb3&parseTime=True&loc=Local"
+	dsn := "root:RaTa8855@tcp(127.0.0.1:3306)/pbbv?charset=utf8mb3&parseTime=True&loc=Local"
 	var err error
 	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
@@ -84,8 +85,55 @@ func GetUsuarioByUsername(username string) (dao.User, error) {
 	result := DB.Where("Nombre_Usuario = ?", username).First(&usuario)
 
 	if result.Error != nil {
-		return dao.User{}, fmt.Errorf("not found user with username: %s", username)
+		return dao.User{}, fmt.Errorf("No se encontro el usuario: %s", username)
 	}
 
 	return usuario, nil
+}
+
+func FindCoursesByQuery(query string) ([]dao.Curso, error) {
+	var cursos []dao.Curso
+	result := DB.Where("Titulo LIKE ? OR Descripcion LIKE ?", "%"+query+"%", "%"+query+"%").Find(&cursos)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return cursos, nil
+}
+
+func FindCourseByID(id int) (dao.Curso, error) {
+	var curso dao.Curso
+	result := DB.First(&curso, id)
+	if result.Error != nil {
+		return dao.Curso{}, fmt.Errorf("no se encontró el curso con el ID: %d", id)
+	}
+	return curso, nil
+}
+
+func SubscribeUserToCourse(userID int, courseID int) error {
+	var inscripcion dao.Inscripcion
+	result := DB.Where("Id_usuario = ? AND Id_curso = ?", userID, courseID).First(&inscripcion)
+	if result.Error == nil {
+		return fmt.Errorf("el usuario %d ya está suscrito al curso %d", userID, courseID)
+	}
+
+	inscripcion = dao.Inscripcion{
+		IdUsuario:        userID,
+		IdCurso:          courseID,
+		FechaInscripcion: time.Now().UTC(),
+	}
+
+	result = DB.Create(&inscripcion)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
+}
+func SelectUserByID(id int) (dao.User, error) {
+	var user dao.User
+	result := DB.First(&user, id)
+	if result.Error != nil {
+		return dao.User{}, fmt.Errorf("No se encontro el usuario con el id: %d", id)
+	}
+	return user, nil
 }

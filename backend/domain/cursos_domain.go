@@ -11,3 +11,12 @@ type Curso struct {
 	Descripcion string    `json:"descripcion"`
 	Usuarios    []User    `json:"usuarios"`
 }
+
+type SearchResponse struct {
+	Results []Curso `json:"results"`
+}
+
+type SubscribeRequest struct {
+	IdUsuario int `json:"id_usuario"`
+	IdCurso   int `json:"id_curso"`
+}

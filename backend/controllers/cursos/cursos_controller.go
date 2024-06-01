@@ -2,16 +2,19 @@ package cursos
 
 import (
 	cursosDomain "backend/dao"
-	cursosServices "backend/services"
+	"backend/domain"
+	"backend/services"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 func DeleteCurso(c *gin.Context) {
 	cursoID := c.Param("id")
 
-	err := cursosServices.DeleteCurso(cursoID)
+	err := services.DeleteCurso(cursoID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -32,7 +35,7 @@ func UpdateCurso(c *gin.Context) {
 		return
 	}
 
-	if err := cursosServices.UpdateCurso(cursoID, updatedCurso); err != nil {
+	if err := services.UpdateCurso(cursoID, updatedCurso); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -47,10 +50,68 @@ func CreateCurso(c *gin.Context) {
 		return
 	}
 
-	if err := cursosServices.CreateCurso(curso); err != nil {
+	if err := services.CreateCurso(curso); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "Curso creado correctamente"})
+}
+
+func Search(c *gin.Context) {
+	query := strings.TrimSpace(c.Query("query"))
+	results, err := services.Search(query)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, domain.Response{
+			Message: fmt.Sprintf("Error in search: %s", err.Error()),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, domain.SearchResponse{
+		Results: results,
+	})
+}
+
+func Get(c *gin.Context) {
+	idStr := c.Param("id")
+	id, err := strconv.ParseInt(idStr, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, domain.Response{
+			Message: fmt.Sprintf("Invalid ID: %s", err.Error()),
+		})
+		return
+	}
+
+	course, err := services.Get(int(id))
+	if err != nil {
+		c.JSON(http.StatusNotFound, domain.Response{
+			Message: fmt.Sprintf("Error in get: %s", err.Error()),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, course)
+}
+
+func Subscribe(c *gin.Context) {
+	var request domain.SubscribeRequest
+
+	if err := c.ShouldBindJSON(&request); err != nil {
+		c.JSON(http.StatusBadRequest, domain.Response{
+			Message: fmt.Sprintf("Invalid request: %s", err.Error()),
+		})
+		return
+	}
+
+	if err := services.Subscribe(request.IdUsuario, request.IdCurso); err != nil {
+		c.JSON(http.StatusConflict, domain.Response{
+			Message: fmt.Sprintf("Error al subscribirse; %s", err.Error()),
+		})
+		return
+	}
+
+	c.JSON(http.StatusCreated, domain.Response{
+		Message: fmt.Sprintf("Usuario %d inscripto exitosamente al curso %d", request.IdUsuario, request.IdCurso),
+	})
 }

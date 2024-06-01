@@ -3,7 +3,10 @@ package services
 import (
 	"backend/dao"
 	"backend/db"
+	"backend/domain"
+	"fmt"
 	"log"
+	"strings"
 )
 
 func DeleteCurso(cursoID string) error {
@@ -41,4 +44,58 @@ func CreateCurso(curso dao.Curso) error {
 	// Aquí puedes agregar validaciones adicionales si es necesario
 	result := db.DB.Create(&curso)
 	return result.Error
+}
+
+func Search(query string) ([]domain.Curso, error) {
+	trimmed := strings.TrimSpace(query)
+
+	courses, err := db.FindCoursesByQuery(trimmed)
+	if err != nil {
+		return nil, fmt.Errorf("error getting courses from DB: %w", err)
+	}
+
+	results := make([]domain.Curso, 0)
+	for _, curso := range courses {
+		results = append(results, domain.Curso{
+			IdCurso:     curso.IdCurso,
+			Titulo:      curso.Titulo,
+			Descripcion: curso.Descripcion,
+			Categoria:   curso.Categoria,
+			Archivo:     curso.Archivo,
+			FechaInicio: curso.FechaInicio,
+		})
+	}
+	return results, nil
+}
+
+func Get(id int) (domain.Curso, error) {
+	curso, err := db.FindCourseByID(id)
+	if err != nil {
+		return domain.Curso{}, fmt.Errorf("error getting course from DB: %w", err)
+	}
+
+	return domain.Curso{
+		IdCurso:     curso.IdCurso,
+		Titulo:      curso.Titulo,
+		Descripcion: curso.Descripcion,
+		Categoria:   curso.Categoria,
+		Archivo:     curso.Archivo,
+		FechaInicio: curso.FechaInicio,
+	}, nil
+}
+
+func Subscribe(id_usuario int, id_curso int) error {
+	if _, err := db.SelectUserByID(id_usuario); err != nil {
+		return fmt.Errorf("No se encontro el usuario en la BD: %w", err)
+	}
+
+	if _, err := db.FindCourseByID(id_curso); err != nil {
+		return fmt.Errorf("No se encontro el curso en la BD: %w", err)
+	}
+
+	if err := db.SubscribeUserToCourse(id_usuario, id_curso); err != nil {
+		return fmt.Errorf("No se pudo realizar la inscripcion: %w", err)
+	}
+
+	return nil
 }
