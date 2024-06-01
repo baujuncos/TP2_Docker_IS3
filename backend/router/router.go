@@ -15,6 +15,7 @@ func SetupRouter() *gin.Engine {
 
 	r.DELETE("/cursos/:id", cursos.DeleteCurso)
 	r.PUT("/cursos/:id", cursos.UpdateCurso)
+	r.POST()
 	r.POST("/cursos", cursos.CreateCurso)
 	r.GET("/usuarios/:id_usuario/cursos", users.ListarCursosUsuario)
 

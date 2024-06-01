@@ -3,6 +3,7 @@ package db
 import (
 	"backend/dao"
 	"database/sql"
+	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"log"
@@ -75,4 +76,16 @@ func GetCursosUsuario(userId int) ([]dao.Curso, error) {
 	}
 
 	return cursos, nil
+}
+
+func GetUsuarioByUsername(username string) (dao.User, error) {
+	var usuario dao.User
+
+	result := DB.Where("NombreUsuario = ?", username).First(&usuario)
+
+	if result.Error != nil {
+		return dao.User{}, fmt.Errorf("not found user with username: %s", username)
+	}
+
+	return usuario, nil
 }
