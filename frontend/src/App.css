@@ -47,7 +47,7 @@
   margin-left: 140px;
 }
 
-button{
+.search-button{
   width: 40px;
   height: 50px;
   align-items: center;
@@ -76,12 +76,97 @@ input{
   margin-right: 10px; /* Espacio entre el logo y el texto */
 }
 
+/*Estilos login*/
+
 .login-text {
   font-size: 25px; /* Ajusta el tamaño del texto según sea necesario */
   margin-right: 10px;
   font-weight: normal;
+  text-decoration: none;
+  color: inherit;
 }
 
+.login-text:hover{
+  background-color: #ddd3d3;
+  border-radius: 20px;
+  padding: 10px;
+  transform: none;
+  transition: none;
+}
+
+.login-button{
+  margin-top: 30px;
+  margin-bottom: 30px;
+  font-size: 20px;
+  background-color: #4e4ef6;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  padding: 15px 60px;
+}
+
+.home-texto:hover, .inscripcion-texto:hover, .cursos-texto:hover, .miscursos-texto:hover{
+  background-color: #ddd3d3;
+  border-radius: 20px;
+  padding: 10px;
+}
+
+.login-container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 20px;
+  border: 4px solid #050000;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 350px;
+  height: 400px;
+  margin: auto;
+}
+
+.caja-nombre-usuario, .caja-contraseña{
+  border: 2px solid #050000;
+  background-color: white;
+}
+
+/*Estilos inscripcion*/
+
+.nombre-apellido-container{
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  width: 100%;
+  margin-bottom: 15px;
+  font-size: 20px;
+}
+
+.nombre-container, .apellido-container, .email-container, .nombre-usuario-container{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.nombre-texto, .apellido-texto, .email-texto, .nombre-usuario-texto{
+  margin-bottom: 10px;
+}
+
+.email-usuario-container{
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  width: 100%;
+  margin-bottom: 15px;
+  font-size: 20px;
+}
+
+.caja-nombre, .caja-apellido, .caja-email{
+  border: 2px solid #050000;
+  background-color: white;
+}
+
+/*Estilos main content*/
 
 .App-cuerpo {
   background-color: #ffffff;
@@ -92,10 +177,6 @@ input{
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: #050000;
-}
-
-.App-link {
-  color: #61dafb;
 }
 
 .descripcion{
@@ -215,6 +296,8 @@ input{
   justify-content: center;
 }
 
+/*Estilos columna*/
+
 .columna {
   padding: 30px;
   width: 200px;
@@ -237,4 +320,10 @@ input{
   cursor: pointer;
   font-weight: normal;
 }
+
+.componente-columna a {
+  text-decoration: none;
+  color: inherit; /* Para que el color del enlace herede el color del texto circundante */
+}
+
 
