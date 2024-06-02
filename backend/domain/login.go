@@ -16,5 +16,5 @@ type User struct {
 	Apellido      string `json:"apellido"`
 	Email         string `json:"email"`
 	Contrasena    string `json:"contrasena"`
-	Tipo          string `json:"tipo"`
+	Tipo          bool   `json:"tipo"`
 }

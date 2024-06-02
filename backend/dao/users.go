@@ -7,5 +7,5 @@ type User struct {
 	Apellido      string `gorm:"column:Apellido"`
 	Email         string `gorm:"column:Email"`
 	Contrasena    string `gorm:"column:Contraseña"`
-	Tipo          string `gorm:"column:Tipo"`
+	Tipo          bool   `gorm:"column:Tipo"`
 }

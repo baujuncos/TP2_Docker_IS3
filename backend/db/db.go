@@ -2,7 +2,9 @@ package db
 
 import (
 	"backend/dao"
+	"crypto/sha1"
 	"database/sql"
+	"encoding/hex"
 	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -25,6 +27,83 @@ func InitDB() {
 	sqlDB, err = DB.DB()
 	if err != nil {
 		log.Fatal("failed to get sql.DB from gorm: ", err)
+	}
+
+	// Migrar las estructuras a la base de datos
+	Migrate()
+
+	// Seed the database with initial data
+	SeedDB()
+}
+
+func Migrate() {
+	// Migrar tablas en el orden correcto
+	err := DB.AutoMigrate(&dao.User{})
+	if err != nil {
+		log.Fatal("failed to migrate User table: ", err)
+	}
+
+	err = DB.AutoMigrate(&dao.Curso{})
+	if err != nil {
+		log.Fatal("failed to migrate Curso table: ", err)
+	}
+
+	err = DB.AutoMigrate(&dao.Inscripcion{})
+	if err != nil {
+		log.Fatal("failed to migrate Inscripcion table: ", err)
+	}
+}
+
+func SeedDB() {
+	// Crear usuarios
+	users := []dao.User{
+		{NombreUsuario: "pauliiortizz", Nombre: "paulina", Apellido: "ortiz", Email: "pauliortiz@example.com", Contrasena: "contraseña1", Tipo: false},
+		{NombreUsuario: "baujuncos", Nombre: "bautista", Apellido: "juncos", Email: "baujuncos@example.com", Contrasena: "contraseña2", Tipo: true},
+		{NombreUsuario: "belutreachi", Nombre: "belen", Apellido: "treachi", Email: "belutreachi2@example.com", Contrasena: "contraseña3", Tipo: false},
+		{NombreUsuario: "virchu", Nombre: "virginia", Apellido: "rodriguez", Email: "virchurodiguez@example.com", Contrasena: "contraseña4", Tipo: false},
+		{NombreUsuario: "johndoe", Nombre: "John", Apellido: "Doe", Email: "johndoe@example.com", Contrasena: "contraseña5", Tipo: false},
+		{NombreUsuario: "alicesmith", Nombre: "Alice", Apellido: "Smith", Email: "alicesmith@example.com", Contrasena: "contraseña6", Tipo: true},
+		{NombreUsuario: "bobjohnson", Nombre: "Bob", Apellido: "Johnson", Email: "bobjohnson@example.com", Contrasena: "contraseña7", Tipo: false},
+		{NombreUsuario: "janedoe", Nombre: "Jane", Apellido: "Doe", Email: "janedoe@example.com", Contrasena: "contraseña8", Tipo: false},
+		{NombreUsuario: "emilywilliams", Nombre: "Emily", Apellido: "Williams", Email: "emilywilliams@example.com", Contrasena: "contraseña9", Tipo: true},
+	}
+
+	for i, user := range users {
+		// Hashear la contraseña con SHA-1
+		hasher := sha1.New()
+		hasher.Write([]byte(user.Contrasena))
+		hashedPassword := hex.EncodeToString(hasher.Sum(nil))
+		users[i].Contrasena = hashedPassword
+		DB.FirstOrCreate(&users[i], dao.User{Email: user.Email})
+	}
+
+	// Crear cursos
+	cursos := []dao.Curso{
+		{Titulo: "Curso de Go", FechaInicio: time.Now(), Categoria: "Programación", Archivo: "curso.pdf", Descripcion: "Curso avanzado de Go"},
+		{Titulo: "Curso de Python", FechaInicio: time.Now(), Categoria: "Programación", Archivo: "curso_python.pdf", Descripcion: "Curso básico de Python"},
+		{Titulo: "Curso de Java", FechaInicio: time.Now(), Categoria: "Programación", Archivo: "curso_java.pdf", Descripcion: "Curso intermedio de Java"},
+		{Titulo: "Curso de C++", FechaInicio: time.Now(), Categoria: "Programación", Archivo: "curso_cpp.pdf", Descripcion: "Curso básico de C++"},
+		{Titulo: "Curso de JavaScript", FechaInicio: time.Now(), Categoria: "Programación", Archivo: "curso_js.pdf", Descripcion: "Curso completo de JavaScript"},
+	}
+	for _, curso := range cursos {
+		DB.FirstOrCreate(&curso, dao.Curso{Titulo: curso.Titulo})
+	}
+
+	// Crear inscripciones
+	inscripciones := []dao.Inscripcion{
+		{IdUsuario: 1, IdCurso: 1, FechaInscripcion: time.Now()},
+		{IdUsuario: 2, IdCurso: 2, FechaInscripcion: time.Now()},
+		{IdUsuario: 3, IdCurso: 3, FechaInscripcion: time.Now()},
+		{IdUsuario: 4, IdCurso: 4, FechaInscripcion: time.Now()},
+		{IdUsuario: 5, IdCurso: 5, FechaInscripcion: time.Now()},
+		{IdUsuario: 1, IdCurso: 2, FechaInscripcion: time.Now()},
+		{IdUsuario: 2, IdCurso: 3, FechaInscripcion: time.Now()},
+		{IdUsuario: 3, IdCurso: 4, FechaInscripcion: time.Now()},
+		{IdUsuario: 4, IdCurso: 5, FechaInscripcion: time.Now()},
+		{IdUsuario: 5, IdCurso: 1, FechaInscripcion: time.Now()},
+	}
+	for _, inscripcion := range inscripciones {
+		DB.FirstOrCreate(&inscripcion, dao.Inscripcion{IdUsuario: inscripcion.IdUsuario, IdCurso: inscripcion.IdCurso})
 	}
 }
 
