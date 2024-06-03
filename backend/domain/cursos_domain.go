@@ -9,7 +9,7 @@ type Curso struct {
 	Categoria   string    `json:"categoria"`
 	Archivo     string    `json:"archivo"`
 	Descripcion string    `json:"descripcion"`
-	Usuarios    []User    `json:"usuarios"`
+	Usuarios    []User    `json:"-"`
 }
 
 type SearchResponse struct {
