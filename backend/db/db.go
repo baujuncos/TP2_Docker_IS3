@@ -52,7 +52,7 @@ func Migrate() {
 		log.Fatal("failed to migrate Curso table: ", err)
 	}
 
-	err = DB.Migrator().CreateTable(&dao.Inscripcion{})
+	err = DB.Migrator().CreateTable(&dao.Inscripciones{})
 	if err != nil {
 		log.Fatal("failed to migrate Inscripcion table: ", err)
 	}
@@ -94,7 +94,7 @@ func SeedDB() {
 	}
 
 	// Crear inscripciones
-	inscripciones := []dao.Inscripcion{
+	inscripciones := []dao.Inscripciones{
 		{IdUsuario: 1, IdCurso: 1, FechaInscripcion: time.Now()},
 		{IdUsuario: 2, IdCurso: 2, FechaInscripcion: time.Now()},
 		{IdUsuario: 3, IdCurso: 3, FechaInscripcion: time.Now()},
@@ -106,8 +106,8 @@ func SeedDB() {
 		{IdUsuario: 4, IdCurso: 5, FechaInscripcion: time.Now()},
 		{IdUsuario: 5, IdCurso: 1, FechaInscripcion: time.Now()},
 	}
-	for _, inscripcion := range inscripciones {
-		DB.FirstOrCreate(&inscripcion, dao.Inscripcion{IdUsuario: inscripcion.IdUsuario, IdCurso: inscripcion.IdCurso})
+	for _, inscripciones := range inscripciones {
+		DB.FirstOrCreate(&inscripciones, dao.Inscripciones{IdUsuario: inscripciones.IdUsuario, IdCurso: inscripciones.IdCurso})
 	}
 }
 
@@ -193,13 +193,13 @@ func FindCourseByID(id int) (dao.Curso, error) {
 }
 
 func SubscribeUserToCourse(userID int, courseID int) error {
-	var inscripcion dao.Inscripcion
+	var inscripcion dao.Inscripciones
 	result := DB.Where("Id_usuario = ? AND Id_curso = ?", userID, courseID).First(&inscripcion)
 	if result.Error == nil {
 		return fmt.Errorf("el usuario %d ya está suscrito al curso %d", userID, courseID)
 	}
 
-	inscripcion = dao.Inscripcion{
+	inscripcion = dao.Inscripciones{
 		IdUsuario:        userID,
 		IdCurso:          courseID,
 		FechaInscripcion: time.Now().UTC(),
