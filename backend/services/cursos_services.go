@@ -29,17 +29,28 @@ func UpdateCurso(cursoID int, updatedCurso dao.Curso) error {
 
 	log.Printf("Found course: %v", curso)
 
-	// Actualiza los campos necesarios
-	curso.Titulo = updatedCurso.Titulo
-	curso.FechaInicio = updatedCurso.FechaInicio
-	curso.Categoria = updatedCurso.Categoria
-	curso.Archivo = updatedCurso.Archivo
-	curso.Descripcion = updatedCurso.Descripcion
+	// Actualiza solo los campos presentes en updatedCurso
+	if updatedCurso.Titulo != "" {
+		curso.Titulo = updatedCurso.Titulo
+	}
+	if !updatedCurso.FechaInicio.IsZero() {
+		curso.FechaInicio = updatedCurso.FechaInicio
+	}
+	if updatedCurso.Categoria != "" {
+		curso.Categoria = updatedCurso.Categoria
+	}
+	if updatedCurso.Archivo != "" {
+		curso.Archivo = updatedCurso.Archivo
+	}
+	if updatedCurso.Descripcion != "" {
+		curso.Descripcion = updatedCurso.Descripcion
+	}
 
 	log.Printf("Updated course: %v", curso)
 
 	return db.DB.Save(&curso).Error
 }
+
 func CreateCurso(curso dao.Curso) error {
 	// Aquí puedes agregar validaciones adicionales si es necesario
 	result := db.DB.Create(&curso)
