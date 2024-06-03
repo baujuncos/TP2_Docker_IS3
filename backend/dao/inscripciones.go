@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-type Inscripcion struct {
+type Inscripciones struct {
 	IdUsuario        int       `gorm:"column:Id_usuario; not null"`
 	IdCurso          int       `gorm:"column:Id_curso; not null"`
 	FechaInscripcion time.Time `gorm:"column:fecha_inscripcion; not null"`
