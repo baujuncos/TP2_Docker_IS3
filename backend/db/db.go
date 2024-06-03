@@ -16,7 +16,7 @@ var DB *gorm.DB
 var sqlDB *sql.DB
 
 func InitDB() {
-	dsn := "root:belusql@tcp(127.0.0.1:3306)/pbbv?charset=utf8mb3&parseTime=True&loc=Local"
+	dsn := "root:ladrillo753@tcp(127.0.0.1:3306)/pbbv?charset=utf8mb3&parseTime=True&loc=Local"
 	var err error
 	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
@@ -37,18 +37,19 @@ func InitDB() {
 }
 
 func Migrate() {
+
 	// Migrar tablas en el orden correcto
-	err := DB.AutoMigrate(&dao.User{})
+	err := DB.Migrator().CreateTable(&dao.User{})
 	if err != nil {
 		log.Fatal("failed to migrate User table: ", err)
 	}
 
-	err = DB.AutoMigrate(&dao.Curso{})
+	err = DB.Migrator().CreateTable(&dao.Curso{})
 	if err != nil {
 		log.Fatal("failed to migrate Curso table: ", err)
 	}
 
-	err = DB.AutoMigrate(&dao.Inscripcion{})
+	err = DB.Migrator().CreateTable(&dao.Inscripcion{})
 	if err != nil {
 		log.Fatal("failed to migrate Inscripcion table: ", err)
 	}
