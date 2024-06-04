@@ -32,26 +32,37 @@ func InitDB() {
 	// Migrar las estructuras a la base de datos
 	Migrate()
 
-	// Seed the database with initial data
-	SeedDB()
 }
 
 func Migrate() {
 
-	// Migrar tablas en el orden correcto
-	err := DB.Migrator().CreateTable(&dao.User{})
-	if err != nil {
-		log.Fatal("failed to migrate User table: ", err)
-	}
+	// Verificar si la tabla User existe
+	userTableExists := DB.Migrator().HasTable(&dao.User{})
 
-	err = DB.Migrator().CreateTable(&dao.Curso{})
-	if err != nil {
-		log.Fatal("failed to migrate Curso table: ", err)
-	}
+	// Verificar si la tabla Curso existe
+	cursoTableExists := DB.Migrator().HasTable(&dao.Curso{})
 
-	err = DB.Migrator().CreateTable(&dao.Inscripciones{})
-	if err != nil {
-		log.Fatal("failed to migrate Inscripcion table: ", err)
+	// Verificar si la tabla Inscripciones existe
+	inscripcionesTableExists := DB.Migrator().HasTable(&dao.Inscripciones{})
+
+	if !userTableExists && !cursoTableExists && !inscripcionesTableExists {
+		// Migrar tablas en el orden correcto
+		err := DB.Migrator().CreateTable(&dao.User{})
+		if err != nil {
+			log.Fatal("failed to migrate User table: ", err)
+		}
+
+		err = DB.Migrator().CreateTable(&dao.Curso{})
+		if err != nil {
+			log.Fatal("failed to migrate Curso table: ", err)
+		}
+
+		err = DB.Migrator().CreateTable(&dao.Inscripciones{})
+		if err != nil {
+			log.Fatal("failed to migrate Inscripcion table: ", err)
+		}
+		// Seed the database with initial data
+		SeedDB()
 	}
 }
 
