@@ -6,10 +6,11 @@ import (
 	"database/sql"
 	"encoding/hex"
 	"fmt"
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
 	"log"
 	"time"
+
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 var DB *gorm.DB
@@ -17,7 +18,7 @@ var sqlDB *sql.DB
 
 func InitDB() {
 	//dsn := "root:ladrillo753@tcp(127.0.0.1:3306)/pbbv?charset=utf8mb3&parseTime=True&loc=Local"
-	dsn := "root:RaTa8855@tcp(127.0.0.1:3306)/pbbv?charset=utf8mb3&parseTime=True&loc=Local"
+	dsn := "root:belusql1@tcp(127.0.0.1:3306)/pbbv?charset=utf8mb3&parseTime=True&loc=Local"
 	//dsn := "root:ladrillo753@tcp(127.0.0.1:3306)/pbbv?charset=utf8mb3&parseTime=True&loc=Local"
 	//dsn := "root:ladrillo753@tcp(127.0.0.1:3306)/pbbv?charset=utf8mb3&parseTime=True&loc=Local"
 	var err error
@@ -50,6 +51,7 @@ func Migrate() {
 
 	if !userTableExists && !cursoTableExists && !inscripcionesTableExists {
 		// Migrar tablas en el orden correcto
+
 		err := DB.Migrator().CreateTable(&dao.User{})
 		if err != nil {
 			log.Fatal("failed to migrate User table: ", err)
@@ -64,6 +66,7 @@ func Migrate() {
 		if err != nil {
 			log.Fatal("failed to migrate Inscripcion table: ", err)
 		}
+
 		// Seed the database with initial data
 		SeedDB()
 	}
