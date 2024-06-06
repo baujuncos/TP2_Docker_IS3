@@ -29,6 +29,7 @@ func SetupRouter() *gin.Engine {
 	r.GET("/courses/search", cursos.Search)                          //Buscar Curso por parametros
 	r.GET("/courses/:id", cursos.Get)                                //Buscar curso por Id
 	r.POST("/subscriptions", cursos.Subscribe)                       //Inscribirse a Curso
+	r.GET("/cursos", cursos.GetAllCursos)                            //Obtiene TODOS los cursos
 
 	return r
 }

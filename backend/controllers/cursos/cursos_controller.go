@@ -115,3 +115,13 @@ func Subscribe(c *gin.Context) {
 		Message: fmt.Sprintf("Usuario %d inscripto exitosamente al curso %d", request.IdUsuario, request.IdCurso),
 	})
 }
+
+func GetAllCursos(c *gin.Context) {
+	cursos, err := services.GetAllCursos()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, cursos)
+}

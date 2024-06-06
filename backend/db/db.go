@@ -234,3 +234,11 @@ func SelectUserByID(id int) (dao.User, error) {
 	}
 	return user, nil
 }
+
+func GetAllCursos() ([]dao.Curso, error) {
+	var cursos []dao.Curso
+	if err := DB.Find(&cursos).Error; err != nil {
+		return nil, fmt.Errorf("error obteniendo cursos de la base de datos: %w", err)
+	}
+	return cursos, nil
+}
