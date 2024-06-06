@@ -18,7 +18,7 @@ var sqlDB *sql.DB
 
 func InitDB() {
 	//dsn := "root:ladrillo753@tcp(127.0.0.1:3306)/pbbv?charset=utf8mb3&parseTime=True&loc=Local"
-	dsn := "root:belusql1@tcp(127.0.0.1:3306)/pbbv?charset=utf8mb3&parseTime=True&loc=Local"
+	dsn := "root:RaTa8855@tcp(127.0.0.1:3306)/pbbv?charset=utf8mb3&parseTime=True&loc=Local"
 	//dsn := "root:ladrillo753@tcp(127.0.0.1:3306)/pbbv?charset=utf8mb3&parseTime=True&loc=Local"
 	//dsn := "root:ladrillo753@tcp(127.0.0.1:3306)/pbbv?charset=utf8mb3&parseTime=True&loc=Local"
 	var err error
@@ -233,4 +233,12 @@ func SelectUserByID(id int) (dao.User, error) {
 		return dao.User{}, fmt.Errorf("No se encontro el usuario con el id: %d", id)
 	}
 	return user, nil
+}
+
+func GetAllCursos() ([]dao.Curso, error) {
+	var cursos []dao.Curso
+	if err := DB.Find(&cursos).Error; err != nil {
+		return nil, fmt.Errorf("error obteniendo cursos de la base de datos: %w", err)
+	}
+	return cursos, nil
 }

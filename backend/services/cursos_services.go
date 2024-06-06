@@ -110,3 +110,7 @@ func Subscribe(id_usuario int, id_curso int) error {
 
 	return nil
 }
+
+func GetAllCursos() ([]dao.Curso, error) {
+	return db.GetAllCursos()
+}

@@ -28,6 +28,18 @@ function App() {
             });
     };
 
+    // Función para inscribirse a un curso
+    const subscribeToCourse = (courseId) => {
+        axios.post('http://localhost:8080/subscriptions', { courseId })
+            .then(response => {
+                console.log('Successfully subscribed to course');
+                // Puedes realizar alguna acción adicional después de la suscripción
+            })
+            .catch(error => {
+                console.error('Error subscribing to course:', error);
+            });
+    };
+
     return (
         <Router>
             <div className="App">
@@ -50,7 +62,7 @@ function App() {
                     <div className="contenido-principal">
                         <Routes>
                             <Route path="/login" element={<Login />} />
-                            <Route path="/" element={<MainContent courses={courses} />} />
+                            <Route path="/" element={<MainContent courses={courses} onSubscribe={subscribeToCourse} />} />
                             <Route path="/inscripcion" element={<Inscripcion />} />
                         </Routes>
                     </div>
@@ -89,7 +101,12 @@ function SearchBar({ onSearch }) {
     );
 }
 
-function MainContent({ courses }) {
+function MainContent({ courses, onSubscribe }) {
+    // Función para manejar la suscripción a un curso
+    const handleSubscribe = (courseId) => {
+        onSubscribe(courseId); // Llamar a la función de suscripción del padre con el ID del curso
+    };
+
     return (
         <>
             <h1 className="titulo">Bienvenido a WebLearn!</h1>
@@ -101,11 +118,13 @@ function MainContent({ courses }) {
                                 <h1 className="Course-title">{course.titulo}</h1>
                                 <p className="Course-description">{course.descripcion}</p>
                                 <p className="Course-category"><strong>{course.categoria}</strong></p>
+                                {/* Botón para suscribirse al curso */}
+                                <button onClick={() => handleSubscribe(course.id)}>Suscribirse</button>
                             </div>
                         </div>
                     ))
                 ) : (
-                    <p>No se encontraron cursos para la búsqueda.</p>
+                    <p>Explora un mundo de aprendizaje ilimitado con nuestra plataforma de cursos en línea. Desde desarrollo de habilidades profesionales hasta pasatiempos creativos, encontrarás una amplia variedad de cursos diseñados para enriquecer tu vida personal y profesional.</p>
                 )}
             </div>
             <div className="container1">
