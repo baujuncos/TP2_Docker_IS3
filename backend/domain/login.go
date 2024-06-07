@@ -6,7 +6,8 @@ type Credentials struct {
 }
 
 type LoginResponse struct {
-	Token string `json:"token"`
+	IdUser int    `json:"id_usuario"` //este me devuelve
+	Token  string `json:"token"`
 }
 
 type User struct {

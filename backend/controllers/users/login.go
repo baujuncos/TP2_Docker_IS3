@@ -1,6 +1,7 @@
 package users
 
 import (
+	"backend/db"
 	"backend/domain"
 	"backend/services"
 	"fmt"
@@ -25,7 +26,10 @@ func Login(c *gin.Context) {
 		return
 	}
 
+	id, err := db.GetUserIDByUsername(creds.Username)
+
 	c.JSON(http.StatusOK, domain.LoginResponse{
-		Token: token,
+		IdUser: id,
+		Token:  token,
 	})
 }

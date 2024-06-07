@@ -17,9 +17,9 @@ var DB *gorm.DB
 var sqlDB *sql.DB
 
 func InitDB() {
-	//dsn := "root:ladrillo753@tcp(127.0.0.1:3306)/pbbv?charset=utf8mb3&parseTime=True&loc=Local"
+	dsn := "root:ladrillo753@tcp(127.0.0.1:3306)/pbbv?charset=utf8mb3&parseTime=True&loc=Local"
 	//dsn := "root:belusql1@tcp(127.0.0.1:3306)/pbbv?charset=utf8mb3&parseTime=True&loc=Local"
-	dsn := "root:BMKvr042@tcp(127.0.0.1:3306)/pbbv?charset=utf8mb3&parseTime=True&loc=Local"
+	//dsn := "root:BMKvr042@tcp(127.0.0.1:3306)/pbbv?charset=utf8mb3&parseTime=True&loc=Local"
 	//dsn := "root:ladrillo753@tcp(127.0.0.1:3306)/pbbv?charset=utf8mb3&parseTime=True&loc=Local"
 	var err error
 	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
@@ -134,6 +134,22 @@ func DeleteInscripcionesByCursoID(cursoID string) error {
 	query := `DELETE FROM inscripciones WHERE Id_curso = ?`
 	_, err := sqlDB.Exec(query, cursoID)
 	return err
+}
+
+func GetUserIDByUsername(username string) (int, error) {
+	var user dao.User
+
+	result := DB.Where("Nombre_Usuario = ?", username).First(&user)
+
+	if result.Error != nil {
+		return user.IdUsuario, fmt.Errorf("No se encontro el usuario: %s", username)
+	}
+
+	/*if err := DB.Where("username = ?", username).First(&user).Error; err != nil {
+		return 0, err
+	}*/
+
+	return user.IdUsuario, nil
 }
 
 func GetCursosUsuario(userId int) ([]dao.Curso, error) {
