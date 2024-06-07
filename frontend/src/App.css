@@ -326,4 +326,11 @@ input{
   color: inherit; /* Para que el color del enlace herede el color del texto circundante */
 }
 
-
+.mensaje-error-busqueda{
+  display: inline-block;
+  background-color: white;
+  border: 7px solid red;
+  padding: 10px;
+  border-radius: 10px;
+  margin: 10px 0;
+}
