@@ -11,7 +11,7 @@ axios.defaults.adapter = XHRAdapter;
 
 function App() {
     const [courses, setCourses] = useState([]);
-    const [validSearch, setValidSearch] = useState(true);
+    const [validSearch, setValidSearch] = useState(false);
 
     useEffect(() => {
         loadCourses();
@@ -20,8 +20,9 @@ function App() {
     const loadCourses = () => {
         axios.get('http://localhost:8080/cursos')
             .then(response => {
+                console.log('Cursos cargados:', response.data); // Debug: Verificar los datos recibidos
                 setCourses(response.data); // Asumo que la respuesta contiene directamente la lista de cursos
-                setValidSearch(true); // Esto indica que la búsqueda es válida al cargar todos los cursos
+                setValidSearch(true);// Esto indica que la búsqueda es válida al cargar todos los cursos
             })
             .catch(error => {
                 console.error('Error fetching courses:', error);
@@ -113,6 +114,8 @@ function MainContent({ courses, onSubscribe, validSearch }) {
     const handleSubscribe = (courseId) => {
         onSubscribe(courseId);
     };
+
+    console.log('Cursos en MainContent:', courses); // Verificar los datos recibidos en MainContent
 
     return (
         <>
