@@ -1,13 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import './App.css';
-import axios from 'axios'; // Importar Axios
 import { ComponenteColumna } from './components/ComponenteColumna';
 import Login from './pages/login';
 import Inscripcion from "./pages/inscripcion";
-import XHRAdapter from 'axios/lib/adapters/xhr.js';
-
-axios.defaults.adapter = XHRAdapter;
 
 function App() {
     const [courses, setCourses] = useState([]);
@@ -18,11 +14,12 @@ function App() {
     }, []);
 
     const loadCourses = () => {
-        axios.get('http://localhost:8080/cursos')
-            .then(response => {
-                console.log('Cursos cargados:', response.data); // Debug: Verificar los datos recibidos
-                setCourses(response.data); // Asumo que la respuesta contiene directamente la lista de cursos
-                setValidSearch(true);// Esto indica que la búsqueda es válida al cargar todos los cursos
+        fetch('http://localhost:8080/cursos')
+            .then(response => response.json())
+            .then(data => {
+                console.log('Cursos cargados:', data);
+                setCourses(data);
+                setValidSearch(true);
             })
             .catch(error => {
                 console.error('Error fetching courses:', error);
@@ -33,10 +30,11 @@ function App() {
         if (query.trim() === '') {
             loadCourses();
         } else {
-            axios.get(`http://localhost:8080/courses/search?query=${query}`)
-                .then(response => {
-                    setCourses(response.data.results);
-                    setValidSearch(response.data.results.length > 0);
+            fetch(`http://localhost:8080/courses/search?query=${query}`)
+                .then(response => response.json())
+                .then(data => {
+                    setCourses(data.results);
+                    setValidSearch(data.results.length > 0);
                 })
                 .catch(error => {
                     console.error('Error fetching courses:', error);
@@ -45,9 +43,16 @@ function App() {
     };
 
     const subscribeToCourse = (courseId) => {
-        axios.post('http://localhost:8080/subscriptions', { courseId })
-            .then(response => {
-                console.log('Successfully subscribed to course');
+        fetch('http://localhost:8080/subscriptions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ courseId })
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Successfully subscribed to course', data);
             })
             .catch(error => {
                 console.error('Error subscribing to course:', error);
@@ -115,8 +120,6 @@ function MainContent({ courses, onSubscribe, validSearch }) {
         onSubscribe(courseId);
     };
 
-    console.log('Cursos en MainContent:', courses); // Verificar los datos recibidos en MainContent
-
     return (
         <>
             <h1 className="titulo">Bienvenido a WebLearn!</h1>
@@ -124,12 +127,12 @@ function MainContent({ courses, onSubscribe, validSearch }) {
             <div className="Courses">
                 {validSearch ? (
                     courses.map(course => (
-                        <div key={course.id} className="Course">
+                        <div key={course.IdCurso} className="Course">
                             <div className="Course-details">
-                                <h2 className="Course-title">{course.titulo}</h2>
-                                <p className="Course-description">{course.descripcion}</p>
-                                <p className="Course-category"><strong>{course.categoria}</strong></p>
-                                <button onClick={() => handleSubscribe(course.id)}>Suscribirse</button>
+                                <h2 className="Course-title">{course.Titulo}</h2>
+                                <p className="Course-description">{course.Descripcion}</p>
+                                <p className="Course-category"><strong>{course.Categoria}</strong></p>
+                                <button onClick={() => handleSubscribe(course.IdCurso)}>Suscribirse</button>
                             </div>
                         </div>
                     ))
