@@ -2,6 +2,7 @@ package router
 
 import (
 	"backend/controllers/cursos"
+	"backend/controllers/inscripciones"
 	"backend/controllers/users"
 	"github.com/gin-gonic/gin"
 )
@@ -28,7 +29,7 @@ func SetupRouter() *gin.Engine {
 	r.GET("/usuarios/:id_usuario/cursos", users.ListarCursosUsuario) //Listar Cursos por usuario
 	r.GET("/courses/search", cursos.Search)                          //Buscar Curso por parametros
 	r.GET("/courses/:id", cursos.Get)                                //Buscar curso por Id
-	r.POST("/subscriptions", cursos.Subscribe)                       //Inscribirse a Curso
+	r.POST("/subscriptions", inscripciones.Subscribe)                //Inscribirse a Curso
 	r.GET("/cursos", cursos.GetAllCursos)                            //Obtiene TODOS los cursos
 
 	return r
