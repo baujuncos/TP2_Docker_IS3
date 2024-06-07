@@ -18,6 +18,22 @@ func Subscribe(c *gin.Context) {
 		return
 	}
 
+	// Verificar si el usuario ya está suscrito al curso
+	subscribed, err := services.IsSubscribed(request.IdUsuario, request.IdCurso)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, domain.Response{
+			Message: fmt.Sprintf("Error checking subscription: %s", err.Error()),
+		})
+		return
+	}
+
+	if subscribed {
+		c.JSON(http.StatusConflict, domain.Response{
+			Message: fmt.Sprintf("Usuario %d ya está suscrito al curso %d", request.IdUsuario, request.IdCurso),
+		})
+		return
+	}
+
 	if err := services.Subscribe(request.IdUsuario, request.IdCurso); err != nil {
 		c.JSON(http.StatusConflict, domain.Response{
 			Message: fmt.Sprintf("Error al subscribirse; %s", err.Error()),
