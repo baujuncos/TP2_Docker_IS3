@@ -1,11 +1,10 @@
-// Login.js
 import React, { useState } from 'react';
 import { useCookies } from 'react-cookie';
 
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [cookies, setCookie] = useCookies(['token']);
+    const [cookies, setCookie] = useCookies(['token', 'userId']);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -23,12 +22,17 @@ const Login = () => {
             }
 
             const data = await response.json();
-            const { id, token } = data;
+            const { id_usuario, token } = data;
 
+            // Guardar en localStorage
+            localStorage.setItem('userId', id_usuario);
+            localStorage.setItem('token', token);
+
+            // Guardar en cookies
             setCookie('token', token, { path: '/' });
+            setCookie('userId', id_usuario, { path: '/' });
 
-            // Redirect or perform another action upon successful login
-            window.location.href = 'http://localhost:3000/'; // example redirection
+            window.location.href = 'http://localhost:3000/';
 
         } catch (error) {
             console.error('Error:', error);
@@ -40,28 +44,28 @@ const Login = () => {
         <div className="login-container">
             <h2>Login</h2>
             <form onSubmit={handleSubmit}>
-            <div>
-                <label htmlFor="username">Username:</label>
-                <input
-                    type="text"
-                    id="username"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    required
-                />
-            </div>
-            <div>
-                <label htmlFor="password">Contraseña:</label>
-                <input
-                    type="password"
-                    id="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                />
-            </div>
-            <button type="submit">Login</button>
-        </form>
+                <div>
+                    <label htmlFor="username">Username:</label>
+                    <input
+                        type="text"
+                        id="username"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        required
+                    />
+                </div>
+                <div>
+                    <label htmlFor="password">Contraseña:</label>
+                    <input
+                        type="password"
+                        id="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                    />
+                </div>
+                <button type="submit">Login</button>
+            </form>
         </div>
     );
 };

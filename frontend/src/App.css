@@ -279,3 +279,17 @@ button:hover {
     text-decoration: none;
     color: inherit; /* Para que el color del enlace herede el color del texto circundante */
 }
+
+.logout-text {
+    font-size: 25px; /* Ajusta el tamaño del texto según sea necesario */
+    margin-right: 10px;
+    font-weight: normal;
+    text-decoration: none;
+    color: inherit;
+}
+
+.logout-text:hover {
+    background-color: #ddd3d3;
+    border-radius: 20px;
+    padding: 10px;
+}

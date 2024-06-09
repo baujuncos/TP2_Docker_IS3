@@ -8,9 +8,11 @@ import Inscripcion from "./pages/inscripcion";
 function App() {
     const [courses, setCourses] = useState([]);
     const [validSearch, setValidSearch] = useState(false);
+    const [loggedIn, setLoggedIn] = useState(false); // Nuevo estado para verificar si el usuario ha iniciado sesión
 
     useEffect(() => {
         loadCourses();
+        checkLoginStatus(); // Verificar el estado de inicio de sesión cuando se monta el componente
     }, []);
 
     const loadCourses = () => {
@@ -59,6 +61,20 @@ function App() {
             });
     };
 
+    const checkLoginStatus = () => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            setLoggedIn(true);
+        } else {
+            setLoggedIn(false);
+        }
+    };
+
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        setLoggedIn(false);
+    };
+
     return (
         <Router>
             <div className="App">
@@ -71,8 +87,14 @@ function App() {
                         <SearchBar onSearch={searchCourses} />
                     </div>
                     <div className="user-login">
-                        <Link className="login-text" to="/login">Login</Link>
-                        <img src="user-logo.png" className="user-logo" alt="user logo" />
+                        {loggedIn ? (
+                            <>
+                                <button className="logout-text" onClick={handleLogout}>Sign Out</button>
+                                <img src="user-logo.png" className="user-logo" alt="user logo" />
+                            </>
+                        ) : (
+                            <Link className="login-text" to="/login">Login</Link>
+                        )}
                     </div>
                 </header>
                 <div className="App-cuerpo">
