@@ -6,10 +6,11 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"time"
 )
 
 func Subscribe(c *gin.Context) {
-	var request domain.SubscribeRequest
+	var request domain.Inscripcion
 
 	if err := c.ShouldBindJSON(&request); err != nil {
 		c.JSON(http.StatusBadRequest, domain.Response{
@@ -18,7 +19,6 @@ func Subscribe(c *gin.Context) {
 		return
 	}
 
-	// Verificar si el usuario ya está suscrito al curso
 	subscribed, err := services.IsSubscribed(request.IdUsuario, request.IdCurso)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, domain.Response{
@@ -34,9 +34,11 @@ func Subscribe(c *gin.Context) {
 		return
 	}
 
-	if err := services.Subscribe(request.IdUsuario, request.IdCurso); err != nil {
-		c.JSON(http.StatusConflict, domain.Response{
-			Message: fmt.Sprintf("Error al subscribirse; %s", err.Error()),
+	// Agregar fecha de inscripción y comentario
+	fechaInscripcion := time.Now()
+	if err := services.Subscribe(request.IdUsuario, request.IdCurso, fechaInscripcion, request.Comentario); err != nil {
+		c.JSON(http.StatusInternalServerError, domain.Response{
+			Message: fmt.Sprintf("Error al subscribirse: %s", err.Error()),
 		})
 		return
 	}

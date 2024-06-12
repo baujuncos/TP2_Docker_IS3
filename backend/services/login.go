@@ -12,20 +12,26 @@ import (
 
 var jwtKey = []byte("my_secret_key")
 
+// Claims estructura para los claims del token JWT
+type Claims struct {
+	Username string `json:"username"`
+	jwt.StandardClaims
+}
+
+// generateJWT genera un token JWT para un usuario dado
 func generateJWT(username string) (string, error) {
-	// Create the claims
-	claims := jwt.MapClaims{
-		"usuario": username,
-		"exp":     time.Now().Add(time.Hour * 72).Unix(), // Token expiry time (72 hours)
+	claims := &Claims{
+		Username: username,
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: time.Now().Add(72 * time.Hour).Unix(),
+		},
 	}
 
-	// Create the token
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-
-	// Sign the token with the secret key
 	return token.SignedString(jwtKey)
 }
 
+// Login maneja la autenticación de un usuario
 func Login(username string, password string) (string, error) {
 	if strings.TrimSpace(username) == "" {
 		return "", errors.New("username is required")
@@ -43,10 +49,9 @@ func Login(username string, password string) (string, error) {
 	}
 
 	if hash != userDAO.Contrasena {
-		return "", fmt.Errorf("invalid credentials")
+		return "", errors.New("invalid credentials")
 	}
 
-	// Generate JWT token
 	token, err := generateJWT(username)
 	if err != nil {
 		return "", fmt.Errorf("error generating JWT token: %w", err)

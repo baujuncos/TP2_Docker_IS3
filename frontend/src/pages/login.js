@@ -5,9 +5,14 @@ const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [cookies, setCookie] = useCookies(['token', 'userId']);
+    const [loading, setLoading] = useState(false); // Estado para el loading
+    const [error, setError] = useState(''); // Estado para manejar errores
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true); // Comienza el loading
+        setError(''); // Resetea el error
+
         try {
             const response = await fetch('http://localhost:8080/login', {
                 method: 'POST',
@@ -32,11 +37,13 @@ const Login = () => {
             setCookie('token', token, { path: '/' });
             setCookie('userId', id_usuario, { path: '/' });
 
-            window.location.href = 'http://localhost:3000/';
-
+            // Redirigir después del login exitoso
+            window.location.href = '/';
         } catch (error) {
             console.error('Error:', error);
-            alert('Login failed. Please check your credentials and try again.');
+            setError('Login failed. Please check your credentials and try again.');
+        } finally {
+            setLoading(false); // Termina el loading
         }
     };
 
@@ -64,7 +71,10 @@ const Login = () => {
                         required
                     />
                 </div>
-                <button type="submit">Login</button>
+                {error && <p style={{ color: 'red' }}>{error}</p>}
+                <button type="submit" disabled={loading}>
+                    {loading ? 'Logging in...' : 'Login'}
+                </button>
             </form>
         </div>
     );

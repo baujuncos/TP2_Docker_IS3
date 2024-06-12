@@ -45,19 +45,48 @@ function App() {
     };
 
     const subscribeToCourse = (courseId) => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            alert('Debes iniciar sesión para suscribirte a un curso.');
+            return;
+        }
+
+        const userId = localStorage.getItem('userId');
+        const fechaInscripcion = new Date().toISOString(); // Fecha actual en formato ISO
+
+        // Convertir userId y courseId a enteros
+        const userIdInt = parseInt(userId, 10);
+        const courseIdInt = parseInt(courseId, 10);
+
         fetch('http://localhost:8080/subscriptions', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({ courseId })
+            body: JSON.stringify({
+                id_usuario: userIdInt, // Usar la versión entera de userId
+                id_curso: courseIdInt, // Usar la versión entera de courseId
+                fecha_inscripcion: fechaInscripcion,
+                comentario: "Mi comentario"
+            })
         })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    if (response.status === 409) {
+                        throw new Error(`Usuario ${userIdInt} ya está suscrito al curso ${courseIdInt}`);
+                    }
+                    return response.json().then(err => { throw new Error(err.message); });
+                }
+                return response.json();
+            })
             .then(data => {
                 console.log('Successfully subscribed to course', data);
+                alert(`Te has inscrito con éxito al curso ${courseIdInt}`); // Mostrar mensaje de éxito
             })
             .catch(error => {
-                console.error('Error subscribing to course:', error);
+                console.error('Error subscribing to course:', error.message);
+                alert(error.message); // Mostrar el error al usuario
             });
     };
 
@@ -72,6 +101,7 @@ function App() {
 
     const handleLogout = () => {
         localStorage.removeItem('token');
+        localStorage.removeItem('userId');
         setLoggedIn(false);
     };
 
@@ -101,7 +131,7 @@ function App() {
                     <ComponenteColumna />
                     <div className="contenido-principal">
                         <Routes>
-                            <Route path="/login" element={<Login />} />
+                            <Route path="/login" element={<Login onLogin={checkLoginStatus} />} />
                             <Route path="/" element={<MainContent courses={courses} onSubscribe={subscribeToCourse} validSearch={validSearch} />} />
                             <Route path="/inscripcion" element={<Inscripcion />} />
                         </Routes>

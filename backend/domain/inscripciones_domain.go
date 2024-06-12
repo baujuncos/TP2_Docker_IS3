@@ -8,4 +8,5 @@ type Inscripcion struct {
 	IdCurso          int       `json:"id_curso"`
 	Curso            Curso     `json:"curso"`
 	FechaInscripcion time.Time `json:"fecha_inscripcion"`
+	Comentario       string    `json:"comentario"`
 }

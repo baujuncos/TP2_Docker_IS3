@@ -9,6 +9,12 @@ import (
 	"strings"
 )
 
+// DeleteInscripcionesByCursoID elimina todas las inscripciones asociadas a un curso por su ID
+func DeleteInscripcionesByCursoID(cursoID string) error {
+	return db.DeleteInscripcionesByCursoID(cursoID)
+}
+
+// DeleteCurso elimina un curso y sus inscripciones asociadas
 func DeleteCurso(cursoID string) error {
 	// Primero eliminamos las inscripciones asociadas al curso
 	err := DeleteInscripcionesByCursoID(cursoID)
@@ -20,6 +26,7 @@ func DeleteCurso(cursoID string) error {
 	return db.DeleteCursoByID(cursoID)
 }
 
+// UpdateCurso actualiza los detalles de un curso
 func UpdateCurso(cursoID int, updatedCurso dao.Curso) error {
 	var curso dao.Curso
 	if err := db.DB.First(&curso, cursoID).Error; err != nil {
@@ -51,12 +58,14 @@ func UpdateCurso(cursoID int, updatedCurso dao.Curso) error {
 	return db.DB.Save(&curso).Error
 }
 
+// CreateCurso crea un nuevo curso
 func CreateCurso(curso dao.Curso) error {
 	// Aquí puedes agregar validaciones adicionales si es necesario
 	result := db.DB.Create(&curso)
 	return result.Error
 }
 
+// Search busca cursos basados en una consulta
 func Search(query string) ([]domain.Curso, error) {
 	trimmed := strings.TrimSpace(query)
 
@@ -79,6 +88,7 @@ func Search(query string) ([]domain.Curso, error) {
 	return results, nil
 }
 
+// Get obtiene los detalles de un curso por su ID
 func Get(id int) (domain.Curso, error) {
 	curso, err := db.FindCourseByID(id)
 	if err != nil {
@@ -95,6 +105,7 @@ func Get(id int) (domain.Curso, error) {
 	}, nil
 }
 
+// GetAllCursos obtiene todos los cursos
 func GetAllCursos() ([]dao.Curso, error) {
 	return db.GetAllCursos()
 }

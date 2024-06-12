@@ -19,8 +19,8 @@ var sqlDB *sql.DB
 func InitDB() {
 	//dsn := "root:ladrillo753@tcp(127.0.0.1:3306)/pbbv?charset=utf8mb3&parseTime=True&loc=Local"
 	//dsn := "root:belusql1@tcp(127.0.0.1:3306)/pbbv?charset=utf8mb3&parseTime=True&loc=Local"
-	//dsn := "root:BMKvr042@tcp(127.0.0.1:3306)/pbbv?charset=utf8mb3&parseTime=True&loc=Local"
-	dsn := "root:RaTa8855@tcp(127.0.0.1:3306)/pbbv?charset=utf8mb3&parseTime=True&loc=Local"
+	dsn := "root:BMKvr042@tcp(127.0.0.1:3306)/pbbv?charset=utf8mb3&parseTime=True&loc=Local"
+	//dsn := "root:RaTa8855@tcp(127.0.0.1:3306)/pbbv?charset=utf8mb3&parseTime=True&loc=Local"
 	var err error
 	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
@@ -109,19 +109,19 @@ func SeedDB() {
 
 	// Crear inscripciones
 	inscripciones := []dao.Inscripciones{
-		{IdUsuario: 1, IdCurso: 1, FechaInscripcion: time.Now()},
-		{IdUsuario: 2, IdCurso: 2, FechaInscripcion: time.Now()},
-		{IdUsuario: 3, IdCurso: 3, FechaInscripcion: time.Now()},
-		{IdUsuario: 4, IdCurso: 4, FechaInscripcion: time.Now()},
-		{IdUsuario: 5, IdCurso: 5, FechaInscripcion: time.Now()},
-		{IdUsuario: 1, IdCurso: 2, FechaInscripcion: time.Now()},
-		{IdUsuario: 2, IdCurso: 3, FechaInscripcion: time.Now()},
-		{IdUsuario: 3, IdCurso: 4, FechaInscripcion: time.Now()},
-		{IdUsuario: 4, IdCurso: 5, FechaInscripcion: time.Now()},
-		{IdUsuario: 5, IdCurso: 1, FechaInscripcion: time.Now()},
+		{IdUsuario: 1, IdCurso: 1, FechaInscripcion: time.Now(), Comentario: "Comentario 1"},
+		{IdUsuario: 2, IdCurso: 2, FechaInscripcion: time.Now(), Comentario: "Comentario 2"},
+		{IdUsuario: 3, IdCurso: 3, FechaInscripcion: time.Now(), Comentario: "Comentario 3"},
+		{IdUsuario: 4, IdCurso: 4, FechaInscripcion: time.Now(), Comentario: "Comentario 4"},
+		{IdUsuario: 5, IdCurso: 5, FechaInscripcion: time.Now(), Comentario: "Comentario 5"},
+		{IdUsuario: 1, IdCurso: 2, FechaInscripcion: time.Now(), Comentario: "Comentario 6"},
+		{IdUsuario: 2, IdCurso: 3, FechaInscripcion: time.Now(), Comentario: "Comentario 7"},
+		{IdUsuario: 3, IdCurso: 4, FechaInscripcion: time.Now(), Comentario: "Comentario 8"},
+		{IdUsuario: 4, IdCurso: 5, FechaInscripcion: time.Now(), Comentario: "Comentario 9"},
+		{IdUsuario: 5, IdCurso: 1, FechaInscripcion: time.Now(), Comentario: "Comentario 10"},
 	}
-	for _, inscripciones := range inscripciones {
-		DB.FirstOrCreate(&inscripciones, dao.Inscripciones{IdUsuario: inscripciones.IdUsuario, IdCurso: inscripciones.IdCurso})
+	for _, inscripcion := range inscripciones {
+		DB.FirstOrCreate(&inscripcion, dao.Inscripciones{IdUsuario: inscripcion.IdUsuario, IdCurso: inscripcion.IdCurso})
 	}
 }
 
@@ -133,7 +133,11 @@ func DeleteCursoByID(IdCurso string) error {
 func DeleteInscripcionesByCursoID(cursoID string) error {
 	query := `DELETE FROM inscripciones WHERE Id_curso = ?`
 	_, err := sqlDB.Exec(query, cursoID)
-	return err
+	if err != nil {
+		log.Printf("Error al eliminar inscripciones: %v\n", err)
+		return fmt.Errorf("error al eliminar inscripciones: %w", err)
+	}
+	return nil
 }
 
 func GetUserIDByUsername(username string) (int, error) {
@@ -217,36 +221,36 @@ func FindCourseByID(id int) (dao.Curso, error) {
 	var curso dao.Curso
 	result := DB.First(&curso, id)
 	if result.Error != nil {
-		return dao.Curso{}, fmt.Errorf("no se encontró el curso con el ID: %d", id)
+		if result.Error == gorm.ErrRecordNotFound {
+			return dao.Curso{}, fmt.Errorf("no se encontró el curso con el ID: %d", id)
+		}
+		return dao.Curso{}, fmt.Errorf("error al buscar el curso: %w", result.Error)
 	}
 	return curso, nil
 }
 
-func SubscribeUserToCourse(userID int, courseID int) error {
-	var inscripcion dao.Inscripciones
-	result := DB.Where("Id_usuario = ? AND Id_curso = ?", userID, courseID).First(&inscripcion)
-	if result.Error == nil {
-		return fmt.Errorf("el usuario %d ya está suscrito al curso %d", userID, courseID)
+func SubscribeUserToCourse(id_usuario int, id_curso int, fecha_inscripcion time.Time, comentario string) error {
+	inscripcion := dao.Inscripciones{
+		IdUsuario:        id_usuario,
+		IdCurso:          id_curso,
+		FechaInscripcion: fecha_inscripcion,
+		Comentario:       comentario,
 	}
-
-	inscripcion = dao.Inscripciones{
-		IdUsuario:        userID,
-		IdCurso:          courseID,
-		FechaInscripcion: time.Now().UTC(),
+	if err := DB.Create(&inscripcion).Error; err != nil {
+		log.Printf("Error al guardar la inscripción: %v\n", err)
+		return fmt.Errorf("error al guardar la inscripción: %w", err)
 	}
-
-	result = DB.Create(&inscripcion)
-	if result.Error != nil {
-		return result.Error
-	}
-
 	return nil
 }
+
 func SelectUserByID(id int) (dao.User, error) {
 	var user dao.User
 	result := DB.First(&user, id)
 	if result.Error != nil {
-		return dao.User{}, fmt.Errorf("No se encontro el usuario con el id: %d", id)
+		if result.Error == gorm.ErrRecordNotFound {
+			return dao.User{}, fmt.Errorf("No se encontro el usuario con el id: %d", id)
+		}
+		return dao.User{}, fmt.Errorf("error al buscar el usuario: %w", result.Error)
 	}
 	return user, nil
 }
