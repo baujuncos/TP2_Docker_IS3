@@ -293,3 +293,104 @@ button:hover {
     border-radius: 20px;
     padding: 10px;
 }
+
+/* Ajustes generales */
+.App-cuerpo {
+    background-color: #ffffff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: row; /* Cambiado de 'column' a 'row' para alinear lado a lado */
+    align-items: flex-start; /* Alineación de elementos al principio del contenedor */
+    justify-content: flex-start; /* Alineación de elementos al principio del contenedor */
+    font-size: calc(10px + 2vmin);
+    color: #050000;
+    padding-top: 100px; /* Añadir padding para no sobreponer el header */
+}
+
+/* Estilos de la columna */
+.columna {
+    width: 200px;
+}
+
+.componente-columna {
+    width: 200px; /* Asegurar que la barra lateral tenga un ancho fijo */
+    background-color: #f4f4f4;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 100px; /* Ajustar la posición para alinearse con el header */
+    left: 0;
+    border-radius: 0 80px 0 0;
+    height: calc(100vh - 100px); /* Altura ajustada tomando en cuenta el header */
+}
+
+/* Ajustes del contenido principal */
+.contenido-principal {
+    margin-left: 220px; /* Dejar un espacio para la barra lateral */
+    padding: 20px;
+    width: calc(100% - 220px); /* Ajustar el ancho del contenido principal */
+}
+
+/* Otros estilos */
+.descripcion {
+    text-align: center;
+    margin-bottom: 30px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 23px;
+}
+
+.titulo {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.Courses {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.Course {
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+}
+
+.Course-title {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.Course-description {
+    margin-bottom: 10px;
+}
+
+.Course-category {
+    margin-bottom: 10px;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: white;
+    text-decoration: none;
+    border: none;
+    border-radius: 4px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.mensaje-error-busqueda {
+    display: inline-block;
+    background-color: white;
+    border: 7px solid red;
+    padding: 10px;
+    border-radius: 10px;
+    margin: 10px 0;
+}
