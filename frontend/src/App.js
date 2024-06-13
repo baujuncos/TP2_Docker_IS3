@@ -4,11 +4,14 @@ import './App.css';
 import { ComponenteColumna } from './components/ComponenteColumna';
 import Login from './pages/login';
 import Inscripcion from "./pages/inscripcion";
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography } from '@mui/material';
 
 function App() {
     const [courses, setCourses] = useState([]);
     const [validSearch, setValidSearch] = useState(false);
     const [loggedIn, setLoggedIn] = useState(false); // Nuevo estado para verificar si el usuario ha iniciado sesión
+    const [selectedCourse, setSelectedCourse] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
         loadCourses();
@@ -105,6 +108,16 @@ function App() {
         setLoggedIn(false);
     };
 
+    const openModal = (course) => {
+        setSelectedCourse(course);
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setSelectedCourse(null);
+        setIsModalOpen(false);
+    };
+
     return (
         <Router>
             <div className="App">
@@ -132,12 +145,15 @@ function App() {
                     <div className="contenido-principal">
                         <Routes>
                             <Route path="/login" element={<Login onLogin={checkLoginStatus} />} />
-                            <Route path="/" element={<MainContent courses={courses} onSubscribe={subscribeToCourse} validSearch={validSearch} />} />
+                            <Route path="/" element={<MainContent courses={courses} onSubscribe={subscribeToCourse} validSearch={validSearch} openModal={openModal} />} />
                             <Route path="/inscripcion" element={<Inscripcion />} />
                         </Routes>
                     </div>
                 </div>
             </div>
+            {isModalOpen && selectedCourse && (
+                <Modal course={selectedCourse} closeModal={closeModal} />
+            )}
         </Router>
     );
 }
@@ -167,7 +183,7 @@ function SearchBar({ onSearch }) {
     );
 }
 
-function MainContent({ courses, onSubscribe, validSearch }) {
+function MainContent({ courses, onSubscribe, validSearch, openModal }) {
     const handleSubscribe = (courseId) => {
         onSubscribe(courseId);
     };
@@ -181,9 +197,11 @@ function MainContent({ courses, onSubscribe, validSearch }) {
                     courses.map(course => (
                         <div key={course.IdCurso} className="Course">
                             <div className="Course-details">
-                                <h2 className="Course-title">{course.Titulo}</h2>
-                                <p className="Course-description">{course.Descripcion}</p>
-                                <p className="Course-category"><strong>{course.Categoria}</strong></p>
+                                <div>
+                                    <Link to="#" className="Course-title" onClick={() => openModal(course)}>
+                                        {course.Titulo}
+                                    </Link>
+                                </div>
                                 <button onClick={() => handleSubscribe(course.IdCurso)}>Suscribirse</button>
                             </div>
                         </div>
@@ -193,6 +211,21 @@ function MainContent({ courses, onSubscribe, validSearch }) {
                 )}
             </div>
         </>
+    );
+}
+
+function Modal({ course, closeModal }) {
+    return (
+        <Dialog open={true} onClose={closeModal}>
+            <DialogTitle>{course.Titulo}</DialogTitle>
+            <DialogContent>
+                <Typography variant="body1">{course.Descripcion}</Typography>
+                <Typography variant="body2"><strong>Categoría:</strong> {course.Categoria}</Typography>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={closeModal} color="primary">Cerrar</Button>
+            </DialogActions>
+        </Dialog>
     );
 }
 

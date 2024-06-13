@@ -18,8 +18,8 @@ var sqlDB *sql.DB
 
 func InitDB() {
 	//dsn := "root:ladrillo753@tcp(127.0.0.1:3306)/pbbv?charset=utf8mb3&parseTime=True&loc=Local"
-	//dsn := "root:belusql1@tcp(127.0.0.1:3306)/pbbv?charset=utf8mb3&parseTime=True&loc=Local"
-	dsn := "root:BMKvr042@tcp(127.0.0.1:3306)/pbbv?charset=utf8mb3&parseTime=True&loc=Local"
+	dsn := "root:belusql1@tcp(127.0.0.1:3306)/pbbv?charset=utf8mb3&parseTime=True&loc=Local"
+	//dsn := "root:BMKvr042@tcp(127.0.0.1:3306)/pbbv?charset=utf8mb3&parseTime=True&loc=Local"
 	//dsn := "root:RaTa8855@tcp(127.0.0.1:3306)/pbbv?charset=utf8mb3&parseTime=True&loc=Local"
 	var err error
 	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
@@ -98,7 +98,7 @@ func SeedDB() {
 	// Crear cursos
 	cursos := []dao.Curso{
 		{Titulo: "Curso de Go", FechaInicio: time.Now(), Categoria: "Programación", Archivo: "curso.pdf", Descripcion: "Curso avanzado de Go"},
-		{Titulo: "Curso de Python", FechaInicio: time.Now(), Categoria: "Programación", Archivo: "curso_python.pdf", Descripcion: "Curso básico de Python"},
+		{Titulo: "Curso de Python", FechaInicio: time.Now(), Categoria: "Programación", Archivo: "curso_python.pdf", Descripcion: "Introducción completa al lenguaje de programación Python, diseñado para principiantes y programadores con experiencia previa. A lo largo del curso, los estudiantes aprenderán los fundamentos de Python, incluyendo sintaxis básica, estructuras de datos, funciones y módulos. Además, se explorarán conceptos más avanzados como programación orientada a objetos, manejo de excepciones y manipulación de archivos. El curso también incluye proyectos prácticos y ejercicios que permiten a los estudiantes aplicar lo aprendido en situaciones del mundo real. Al finalizar, los participantes estarán capacitados para desarrollar aplicaciones, automatizar tareas y analizar datos utilizando Python."},
 		{Titulo: "Curso de Java", FechaInicio: time.Now(), Categoria: "Programación", Archivo: "curso_java.pdf", Descripcion: "Curso intermedio de Java"},
 		{Titulo: "Curso de C++", FechaInicio: time.Now(), Categoria: "Programación", Archivo: "curso_cpp.pdf", Descripcion: "Curso básico de C++"},
 		{Titulo: "Curso de JavaScript", FechaInicio: time.Now(), Categoria: "Programación", Archivo: "curso_js.pdf", Descripcion: "Curso completo de JavaScript"},
