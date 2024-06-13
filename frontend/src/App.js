@@ -197,7 +197,7 @@ function MainContent({ courses, onSubscribe, validSearch, openModal }) {
                     courses.map(course => (
                         <div key={course.IdCurso} className="Course">
                             <div className="Course-details">
-                                <div>
+                                <div key={course.IdCurso}>
                                     <Link to="#" className="Course-title" onClick={() => openModal(course)}>
                                         {course.Titulo}
                                     </Link>
@@ -220,7 +220,9 @@ function Modal({ course, closeModal }) {
             <DialogTitle>{course.Titulo}</DialogTitle>
             <DialogContent>
                 <Typography variant="body1">{course.Descripcion}</Typography>
-                <Typography variant="body2"><strong>Categoría:</strong> {course.Categoria}</Typography>
+                <div className="curso-categoria">
+                    <Typography variant="body2"><strong>Categoría:</strong> {course.Categoria}</Typography>
+                </div>
             </DialogContent>
             <DialogActions>
                 <Button onClick={closeModal} color="primary">Cerrar</Button>

@@ -23,6 +23,7 @@
     width: 100%;
     position: fixed;
     justify-content: space-between;
+    background-color: white;
 }
 
 .logoytitulo {
@@ -219,7 +220,11 @@ input {
 .Course-title {
     font-size: 24px;
     margin-bottom: 10px;
+    text-decoration: none;
+    color: #050000;
 }
+
+
 
 .Course-description {
     margin-bottom: 10px;
@@ -361,16 +366,23 @@ button:hover {
 }
 
 .Course-title {
-    font-size: 24px;
-    margin-bottom: 10px;
+    display: inline-block; /* o inline-flex */
+    overflow: hidden; /* Ocultar el exceso de texto */
+    padding: 8px 12px; /* Ajustar el padding vertical y horizontal */
+    border-radius: 10px; /* Reducir el radio del borde */
+    transition: background-color 0.3s ease;
+    font-weight: normal;
 }
 
-.Course-description {
-    margin-bottom: 10px;
+.Course-title:hover{
+    background-color: #ddd3d3;
+    border-radius: 20px;
+    padding: 8px 12px;
+    font-weight: bold;
 }
 
-.Course-category {
-    margin-bottom: 10px;
+.curso-categoria{
+    margin-top: 20px;
 }
 
 button {
