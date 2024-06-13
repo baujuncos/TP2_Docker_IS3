@@ -38,6 +38,7 @@ function App() {
             fetch(`http://localhost:8080/courses/search?query=${query}`)
                 .then(response => response.json())
                 .then(data => {
+                    console.log('Data received from search:', data); // Verifica aquí los datos recibidos
                     setCourses(data.results);
                     setValidSearch(data.results.length > 0);
                 })
@@ -46,6 +47,8 @@ function App() {
                 });
         }
     };
+
+
 
     const subscribeToCourse = (courseId) => {
         const token = localStorage.getItem('token');
@@ -213,6 +216,7 @@ function MainContent({ courses, onSubscribe, validSearch, openModal }) {
         </>
     );
 }
+
 
 function Modal({ course, closeModal }) {
     return (
