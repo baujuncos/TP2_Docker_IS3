@@ -113,16 +113,12 @@ func SeedDB() {
 
 	// Crear inscripciones
 	inscripciones := []dao.Inscripciones{
-		{IdUsuario: 1, IdCurso: 1, FechaInscripcion: time.Now(), Comentario: "Comentario 1"},
-		{IdUsuario: 2, IdCurso: 2, FechaInscripcion: time.Now(), Comentario: "Comentario 2"},
-		{IdUsuario: 3, IdCurso: 3, FechaInscripcion: time.Now(), Comentario: "Comentario 3"},
-		{IdUsuario: 4, IdCurso: 4, FechaInscripcion: time.Now(), Comentario: "Comentario 4"},
-		{IdUsuario: 5, IdCurso: 5, FechaInscripcion: time.Now(), Comentario: "Comentario 5"},
-		{IdUsuario: 1, IdCurso: 2, FechaInscripcion: time.Now(), Comentario: "Comentario 6"},
-		{IdUsuario: 2, IdCurso: 3, FechaInscripcion: time.Now(), Comentario: "Comentario 7"},
-		{IdUsuario: 3, IdCurso: 4, FechaInscripcion: time.Now(), Comentario: "Comentario 8"},
-		{IdUsuario: 4, IdCurso: 5, FechaInscripcion: time.Now(), Comentario: "Comentario 9"},
-		{IdUsuario: 5, IdCurso: 1, FechaInscripcion: time.Now(), Comentario: "Comentario 10"},
+		{IdUsuario: 1, IdCurso: 1, FechaInscripcion: time.Now(), Comentario: ""},
+		{IdUsuario: 2, IdCurso: 2, FechaInscripcion: time.Now(), Comentario: ""},
+		{IdUsuario: 3, IdCurso: 3, FechaInscripcion: time.Now(), Comentario: ""},
+		{IdUsuario: 4, IdCurso: 4, FechaInscripcion: time.Now(), Comentario: ""},
+		{IdUsuario: 5, IdCurso: 5, FechaInscripcion: time.Now(), Comentario: ""},
+		{IdUsuario: 1, IdCurso: 2, FechaInscripcion: time.Now(), Comentario: ""},
 	}
 	for _, inscripcion := range inscripciones {
 		DB.FirstOrCreate(&inscripcion, dao.Inscripciones{IdUsuario: inscripcion.IdUsuario, IdCurso: inscripcion.IdCurso})
