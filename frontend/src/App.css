@@ -113,13 +113,37 @@ input {
     padding: 15px 60px;
 }
 
-.home-texto:hover,
-.inscripcion-texto:hover,
-.cursos-texto:hover,
-.miscursos-texto:hover {
-    background-color: #ddd3d3;
-    border-radius: 20px;
-    padding: 10px;
+.home-texto,
+.inscripcion-texto,
+.cursos-texto,
+.miscursos-texto {
+    position: relative; /* Posición relativa para el subrayado absoluto */
+    display: inline-block; /* Ajusta el ancho al contenido */
+    text-decoration: none; /* Elimina el subrayado por defecto */
+    color: #050000; /* Color del texto */
+}
+
+.home-texto::after,
+.inscripcion-texto::after,
+.cursos-texto::after,
+.miscursos-texto::after {
+    content: ''; /* Contenido vacío para el pseudo-elemento */
+    position: absolute; /* Posición absoluta respecto al enlace */
+    left: 0; /* Comienza desde la izquierda */
+    bottom: -2px; /* Distancia del subrayado respecto al texto */
+    width: 0; /* Ancho inicial del subrayado */
+    height: 3px; /* Grosor del subrayado */
+    background-color: #046a9f; /* Color del subrayado */
+    transition: width 0.3s ease-in-out, background-color 0.3s; /* Transición del ancho */
+}
+
+.home-texto:hover::after,
+.inscripcion-texto:hover::after,
+.cursos-texto:hover::after,
+.miscursos-texto:hover::after {
+    width: 100%; /* Ancho completo al hacer hover */
+    background-color: #0077b6;
+    height: 3px;
 }
 
 .login-container {
@@ -288,7 +312,7 @@ button:hover {
 .componente-columna {
     width: 190px;
     height: calc(100vh - 100px);
-    background-color: #f4f4f4;
+    background-color: #b9e3ec !important;
     padding: 20px;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
     position: fixed;
@@ -410,7 +434,7 @@ button:hover {
 }
 
 .Course-title:hover{
-    background-color: #ddd3d3;
+    background-color: #ece2e2;
     border-radius: 20px;
     padding: 8px 12px;
     font-weight: bold;
