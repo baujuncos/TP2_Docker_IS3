@@ -83,15 +83,23 @@ input {
     margin-right: 10px;
     font-weight: normal;
     text-decoration: none;
-    color: inherit;
+    color: #ffffff; /* Texto blanco */
+    background-color: #0077b6; /* Fondo azul */
+    padding: 10px 20px;
+    border-radius: 20px;
+    transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
 }
 
 .login-text:hover {
-    background-color: #ddd3d3;
-    border-radius: 20px;
-    padding: 10px;
-    transform: none;
-    transition: none;
+    background-color: #00b4d8; /* Fondo celeste */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra */
+    transform: scale(1.05); /* Aumenta ligeramente el tamaño */
+}
+
+/* Para añadir una animación de pulsación cuando se hace clic */
+.login-text:active {
+    transform: scale(0.95); /* Reduce ligeramente el tamaño */
+    transition: transform 0.1s;
 }
 
 .login-button {
@@ -211,20 +219,28 @@ input {
 }
 
 .Course {
-    border: 1px solid #ccc;
+    border: 2px solid #0077b6; /* Borde azul */
     padding: 20px;
-    border-radius: 8px;
-    width: 300px;
+    border-radius: 10px;
+    width: 320px;
+    background-color: #ffffff; /* Fondo blanco */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra */
+    transition: transform 0.2s ease-in-out;
 }
 
 .Course-title {
-    font-size: 24px;
-    margin-bottom: 10px;
+    font-size: 26px;
+    margin-bottom: 15px;
+    color: #023e8a; /* Azul oscuro */
     text-decoration: none;
-    color: #050000;
+    border-bottom: 2px solid #00b4d8; /* Subrayado celeste */
+    padding-bottom: 5px;
+    transition: color 0.3s ease-in-out;
 }
 
-
+.Course-title:hover {
+    color: #00b4d8; /* Cambia a celeste */
+}
 
 .Course-description {
     margin-bottom: 10px;
@@ -247,6 +263,9 @@ button:hover {
     background-color: #0056b3;
 }
 
+.Course:hover {
+    transform: scale(1.05);
+}
 .mensaje-error-busqueda {
     display: inline-block;
     background-color: white;
@@ -254,6 +273,10 @@ button:hover {
     padding: 10px;
     border-radius: 10px;
     margin: 10px 0;
+}
+
+.Course-button:hover {
+    background-color: #00b4d8; /* Cambia a celeste */
 }
 
 /* Estilos columna */
@@ -291,14 +314,25 @@ button:hover {
     margin-right: 10px;
     font-weight: normal;
     text-decoration: none;
-    color: inherit;
+    color: #ffffff; /* Texto blanco */
+    background-color: #0077b6; /* Fondo azul */
+    padding: 10px 20px;
+    border-radius: 20px;
+    transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
 }
 
 .logout-text:hover {
-    background-color: #ddd3d3;
-    border-radius: 20px;
-    padding: 10px;
+    background-color: #00b4d8; /* Fondo celeste */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra */
+    transform: scale(1.05); /* Aumenta ligeramente el tamaño */
 }
+
+/* Para añadir una animación de pulsación cuando se hace clic */
+.logout-text:active {
+    transform: scale(0.95); /* Reduce ligeramente el tamaño */
+    transition: transform 0.1s;
+}
+
 
 /* Ajustes generales */
 .App-cuerpo {
