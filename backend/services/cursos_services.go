@@ -65,6 +65,18 @@ func CreateCurso(curso dao.Curso) error {
 	return result.Error
 }
 
+// Función para convertir dao.Curso a domain.Curso
+func convertToDomainCurso(daoCurso dao.Curso) domain.Curso {
+	return domain.Curso{
+		IdCurso:     daoCurso.IdCurso,
+		Titulo:      daoCurso.Titulo,
+		FechaInicio: daoCurso.FechaInicio,
+		Categoria:   daoCurso.Categoria,
+		Archivo:     daoCurso.Archivo,
+		Descripcion: daoCurso.Descripcion,
+	}
+}
+
 // Search busca cursos basados en una consulta
 func Search(query string) ([]domain.Curso, error) {
 	trimmed := strings.TrimSpace(query)
@@ -76,14 +88,7 @@ func Search(query string) ([]domain.Curso, error) {
 
 	results := make([]domain.Curso, 0)
 	for _, curso := range courses {
-		results = append(results, domain.Curso{
-			IdCurso:     curso.IdCurso,
-			Titulo:      curso.Titulo,
-			Descripcion: curso.Descripcion,
-			Categoria:   curso.Categoria,
-			Archivo:     curso.Archivo,
-			FechaInicio: curso.FechaInicio,
-		})
+		results = append(results, convertToDomainCurso(curso))
 	}
 	return results, nil
 }
@@ -95,17 +100,20 @@ func Get(id int) (domain.Curso, error) {
 		return domain.Curso{}, fmt.Errorf("error getting course from DB: %w", err)
 	}
 
-	return domain.Curso{
-		IdCurso:     curso.IdCurso,
-		Titulo:      curso.Titulo,
-		Descripcion: curso.Descripcion,
-		Categoria:   curso.Categoria,
-		Archivo:     curso.Archivo,
-		FechaInicio: curso.FechaInicio,
-	}, nil
+	return convertToDomainCurso(curso), nil
 }
 
 // GetAllCursos obtiene todos los cursos
-func GetAllCursos() ([]dao.Curso, error) {
-	return db.GetAllCursos()
+func GetAllCursos() ([]domain.Curso, error) {
+	daoCursos, err := db.GetAllCursos()
+	if err != nil {
+		return nil, err
+	}
+
+	var domainCursos []domain.Curso
+	for _, daoCurso := range daoCursos {
+		domainCursos = append(domainCursos, convertToDomainCurso(daoCurso))
+	}
+
+	return domainCursos, nil
 }

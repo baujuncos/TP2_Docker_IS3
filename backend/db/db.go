@@ -210,7 +210,7 @@ func GetUsuarioByUsername(username string) (dao.User, error) {
 
 func FindCoursesByQuery(query string) ([]dao.Curso, error) {
 	var cursos []dao.Curso
-	result := DB.Where("Titulo LIKE ? OR Descripcion LIKE ?", "%"+query+"%", "%"+query+"%").Find(&cursos)
+	result := DB.Where("Titulo LIKE ? OR Categoria LIKE ?", "%"+query+"%", "%"+query+"%").Find(&cursos)
 	if result.Error != nil {
 		return nil, result.Error
 	}

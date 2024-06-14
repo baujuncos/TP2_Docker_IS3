@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import './App.css';
 import { ComponenteColumna } from './components/ComponenteColumna';
-import Login from './pages/login';
-import Inscripcion from "./pages/inscripcion";
+import Login from './components/login';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography } from '@mui/material';
 
 function App() {
@@ -23,7 +22,16 @@ function App() {
             .then(response => response.json())
             .then(data => {
                 console.log('Cursos cargados:', data);
-                setCourses(data);
+                // Mapeamos los datos para convertir IdCurso a id_curso
+                const normalizedCourses = data.map(curso => ({
+                    id_curso: curso.id_curso,
+                    Titulo: curso.Titulo,
+                    Fecha_inicio: curso.FechaInicio,
+                    Categoria: curso.Categoria,
+                    Archivo: curso.Archivo,
+                    Descripcion: curso.Descripcion
+                }));
+                setCourses(normalizedCourses);
                 setValidSearch(true);
             })
             .catch(error => {
@@ -38,6 +46,7 @@ function App() {
             fetch(`http://localhost:8080/courses/search?query=${query}`)
                 .then(response => response.json())
                 .then(data => {
+                    console.log('Resultados de búsqueda:', data);
                     setCourses(data.results);
                     setValidSearch(data.results.length > 0);
                 })
@@ -146,7 +155,6 @@ function App() {
                         <Routes>
                             <Route path="/login" element={<Login onLogin={checkLoginStatus} />} />
                             <Route path="/" element={<MainContent courses={courses} onSubscribe={subscribeToCourse} validSearch={validSearch} openModal={openModal} />} />
-                            <Route path="/inscripcion" element={<Inscripcion />} />
                         </Routes>
                     </div>
                 </div>
@@ -188,6 +196,8 @@ function MainContent({ courses, onSubscribe, validSearch, openModal }) {
         onSubscribe(courseId);
     };
 
+    console.log('Cursos recibidos:', courses);
+
     return (
         <>
             <h1 className="titulo">Bienvenido a WebLearn!</h1>
@@ -195,14 +205,14 @@ function MainContent({ courses, onSubscribe, validSearch, openModal }) {
             <div className="Courses">
                 {validSearch ? (
                     courses.map(course => (
-                        <div key={course.IdCurso} className="Course">
+                        <div key={course.id_curso} className="Course">
                             <div className="Course-details">
-                                <div key={course.IdCurso}>
+                                <div>
                                     <Link to="#" className="Course-title" onClick={() => openModal(course)}>
                                         {course.Titulo}
                                     </Link>
                                 </div>
-                                <button onClick={() => handleSubscribe(course.IdCurso)}>Suscribirse</button>
+                                <button onClick={() => handleSubscribe(course.id_curso)}>Suscribirse</button>
                             </div>
                         </div>
                     ))
@@ -213,6 +223,7 @@ function MainContent({ courses, onSubscribe, validSearch, openModal }) {
         </>
     );
 }
+
 
 function Modal({ course, closeModal }) {
     return (

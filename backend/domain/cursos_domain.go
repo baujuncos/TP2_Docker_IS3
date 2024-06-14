@@ -4,11 +4,11 @@ import "time"
 
 type Curso struct {
 	IdCurso     int       `json:"id_curso"`
-	Titulo      string    `json:"titulo"`
-	FechaInicio time.Time `json:"fecha_inicio"`
-	Categoria   string    `json:"categoria"`
-	Archivo     string    `json:"archivo"`
-	Descripcion string    `json:"descripcion"`
+	Titulo      string    `json:"Titulo"`
+	FechaInicio time.Time `json:"FechaInicio"`
+	Categoria   string    `json:"Categoria"`
+	Archivo     string    `json:"Archivo"`
+	Descripcion string    `json:"Descripcion"`
 	Usuarios    []User    `json:"-"`
 }
 
