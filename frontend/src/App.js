@@ -45,17 +45,28 @@ function App() {
             loadCourses();
         } else {
             fetch(`http://localhost:8080/courses/search?query=${query}`)
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        if (response.status === 404) {
+                            throw new Error('No courses found for the search query.');
+                        }
+                        throw new Error('An error occurred while searching for courses.');
+                    }
+                    return response.json();
+                })
                 .then(data => {
-                    console.log('Resultados de búsqueda:', data);
+                    console.log('Search results:', data);
                     setCourses(data.results);
                     setValidSearch(data.results.length > 0);
                 })
                 .catch(error => {
-                    console.error('Error fetching courses:', error);
+                    console.error('Error fetching courses:', error.message);
+                    setCourses([]); // Set courses to an empty array when no results are found
+                    setValidSearch(false); // Set validSearch to false when no results are found
                 });
         }
     };
+
 
     const subscribeToCourse = (courseId) => {
         const token = localStorage.getItem('token');
@@ -199,7 +210,7 @@ function MainContent({ courses, onSubscribe, validSearch, openModal }) {
         onSubscribe(courseId);
     };
 
-    console.log('Cursos recibidos:', courses);
+    console.log('Received courses:', courses);
 
     return (
         <>
@@ -207,18 +218,22 @@ function MainContent({ courses, onSubscribe, validSearch, openModal }) {
             <p>Explora un mundo de aprendizaje ilimitado con nuestra plataforma de cursos en línea. Desde desarrollo de habilidades profesionales hasta pasatiempos creativos, encontrarás una amplia variedad de cursos diseñados para enriquecer tu vida personal y profesional.</p>
             <div className="Courses">
                 {validSearch ? (
-                    courses.map(course => (
-                        <div key={course.id_curso} className="Course">
-                            <div className="Course-details">
-                                <div>
-                                    <Link to="#" className="Course-title" onClick={() => openModal(course)}>
-                                        {course.Titulo}
-                                    </Link>
+                    courses.length > 0 ? (
+                        courses.map(course => (
+                            <div key={course.id_curso} className="Course">
+                                <div className="Course-details">
+                                    <div>
+                                        <Link to="#" className="Course-title" onClick={() => openModal(course)}>
+                                            {course.Titulo}
+                                        </Link>
+                                    </div>
+                                    <button onClick={() => handleSubscribe(course.id_curso)}>Suscribirse</button>
                                 </div>
-                                <button onClick={() => handleSubscribe(course.id_curso)}>Suscribirse</button>
                             </div>
-                        </div>
-                    ))
+                        ))
+                    ) : (
+                        <p className="mensaje-error-busqueda"><strong>No se encontraron cursos para la búsqueda</strong></p>
+                    )
                 ) : (
                     <p className="mensaje-error-busqueda"><strong>No se encontraron cursos para la búsqueda</strong></p>
                 )}
@@ -226,7 +241,6 @@ function MainContent({ courses, onSubscribe, validSearch, openModal }) {
         </>
     );
 }
-
 
 function Modal({ course, closeModal }) {
     return (

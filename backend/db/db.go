@@ -18,9 +18,9 @@ var sqlDB *sql.DB
 
 func InitDB() {
 	//dsn := "root:ladrillo753@tcp(127.0.0.1:3306)/pbbv?charset=utf8mb3&parseTime=True&loc=Local"
-	dsn := "root:belusql1@tcp(127.0.0.1:3306)/pbbv?charset=utf8mb3&parseTime=True&loc=Local"
+	//dsn := "root:belusql1@tcp(127.0.0.1:3306)/pbbv?charset=utf8mb3&parseTime=True&loc=Local"
 	//dsn := "root:BMKvr042@tcp(127.0.0.1:3306)/pbbv?charset=utf8mb3&parseTime=True&loc=Local"
-	//dsn := "root:RaTa8855@tcp(127.0.0.1:3306)/pbbv?charset=utf8mb3&parseTime=True&loc=Local"
+	dsn := "root:RaTa8855@tcp(127.0.0.1:3306)/pbbv?charset=utf8mb3&parseTime=True&loc=Local"
 	var err error
 	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
@@ -261,4 +261,16 @@ func GetAllCursos() ([]dao.Curso, error) {
 		return nil, fmt.Errorf("error obteniendo cursos de la base de datos: %w", err)
 	}
 	return cursos, nil
+}
+
+func GetUserTypeByID(userID int) (bool, error) {
+	var user dao.User
+	result := DB.First(&user, userID)
+	if result.Error != nil {
+		if result.Error == gorm.ErrRecordNotFound {
+			return false, fmt.Errorf("no se encontró el usuario con el ID: %d", userID)
+		}
+		return false, fmt.Errorf("error al buscar el usuario: %w", result.Error)
+	}
+	return user.Tipo, nil
 }

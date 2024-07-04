@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import { useCookies } from 'react-cookie';
 
-const Login = () => {
+const Login = ({ onLogin }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [cookies, setCookie] = useCookies(['token', 'userId']);
-    const [loading, setLoading] = useState(false); // Estado para el loading
-    const [error, setError] = useState(''); // Estado para manejar errores
+    const [cookies, setCookie] = useCookies(['token', 'userId', 'userType']);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setLoading(true); // Comienza el loading
-        setError(''); // Resetea el error
+        setLoading(true);
+        setError('');
 
         try {
             const response = await fetch('http://localhost:8080/login', {
@@ -27,23 +27,24 @@ const Login = () => {
             }
 
             const data = await response.json();
-            const { id_usuario, token } = data;
+            const { id_usuario, token, tipo } = data;
 
-            // Guardar en localStorage
             localStorage.setItem('userId', id_usuario);
             localStorage.setItem('token', token);
+            localStorage.setItem('userType', tipo);
 
-            // Guardar en cookies
             setCookie('token', token, { path: '/' });
             setCookie('userId', id_usuario, { path: '/' });
+            setCookie('userType', tipo, { path: '/' });
 
-            // Redirigir después del login exitoso
+            if (onLogin) onLogin();
+
             window.location.href = '/';
         } catch (error) {
             console.error('Error:', error);
             setError('Login failed. Please check your credentials and try again.');
         } finally {
-            setLoading(false); // Termina el loading
+            setLoading(false);
         }
     };
 

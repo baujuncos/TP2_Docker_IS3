@@ -8,6 +8,7 @@ type Credentials struct {
 type LoginResponse struct {
 	IdUser int    `json:"id_usuario"` //este me devuelve
 	Token  string `json:"token"`
+	Tipo   bool   `json:"tipo"`
 }
 
 type User struct {

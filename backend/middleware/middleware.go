@@ -13,6 +13,7 @@ var jwtKey = []byte("my_secret_key")
 // Claims estructura para los claims del token JWT
 type Claims struct {
 	Username string `json:"username"`
+	Tipo     bool   `json:"tipo"`
 	jwt.StandardClaims
 }
 
@@ -45,6 +46,33 @@ func AuthMiddleware() gin.HandlerFunc {
 		}
 
 		c.Set("username", claims.Username)
+		c.Set("tipo", claims.Tipo)
+		c.Next()
+	}
+}
+
+// AdminMiddleware verifica que el usuario es un administrador
+func AdminMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		tipo, exists := c.Get("tipo")
+		if !exists || !tipo.(bool) {
+			c.JSON(http.StatusForbidden, gin.H{"error": "Forbidden: Admin access required"})
+			c.Abort()
+			return
+		}
+		c.Next()
+	}
+}
+
+// StudentMiddleware verifica que el usuario es un estudiante
+func StudentMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		tipo, exists := c.Get("tipo")
+		if !exists || tipo.(bool) {
+			c.JSON(http.StatusForbidden, gin.H{"error": "Forbidden: Student access required"})
+			c.Abort()
+			return
+		}
 		c.Next()
 	}
 }

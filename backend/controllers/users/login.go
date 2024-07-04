@@ -10,26 +10,36 @@ import (
 )
 
 func Login(c *gin.Context) {
-	var creds domain.Credentials //Recordar: credenciales son solo username y password
+	var creds domain.Credentials
 
 	if err := c.BindJSON(&creds); err != nil {
 		c.JSON(http.StatusBadRequest, domain.Response{Message: fmt.Sprintf("Invalid request: %s", err.Error())})
 		return
-	} //Verifica si hay error en la request
+	}
 
 	token, err := services.Login(creds.Username, creds.Password)
-
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, domain.Response{
 			Message: fmt.Sprintf("Unauthorized login: %s", err.Error()),
 		})
 		return
-	} // Va en services
+	}
 
 	id, err := db.GetUserIDByUsername(creds.Username)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, domain.Response{Message: fmt.Sprintf("Failed to get user ID: %s", err.Error())})
+		return
+	} //Services
+
+	tipo, err := db.GetUserTypeByID(id)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, domain.Response{Message: fmt.Sprintf("Failed to get user type: %s", err.Error())})
+		return
+	}
 
 	c.JSON(http.StatusOK, domain.LoginResponse{
 		IdUser: id,
 		Token:  token,
-	}) //Va en services
+		Tipo:   tipo,
+	}) //Services
 }
