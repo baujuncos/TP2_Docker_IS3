@@ -465,3 +465,54 @@ button:hover {
     border-radius: 10px;
     margin: 10px 0;
 }
+
+.mis-cursos {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 20px;
+    border: 4px solid #050000;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: calc(100vw - 240px); /* Ancho ajustado para no generar scroll horizontal */
+    max-width: 500px; /* Máximo ancho permitido */
+    max-height: 500px; /* Límite de altura */
+    overflow-y: auto; /* Desplazamiento vertical si el contenido es demasiado grande */
+    position: fixed; /* Posición absoluta para fijar en la pantalla */
+    top: 50%; /* Posiciona el contenedor en el centro verticalmente */
+    left: calc(50% + 120px); /* Centra horizontalmente el contenedor ajustando la posición */
+    transform: translate(-50%, -50%); /* Centra el contenedor */
+    z-index: 900; /* Asegura que esté por debajo del encabezado */
+    margin-top: 50px; /* Margen superior para separar del encabezado */
+}
+
+.cursos-list {
+    width: 100%; /* Asegura que la lista ocupe todo el ancho del contenedor */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centra los elementos hijos horizontalmente */
+}
+
+.curso-item {
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    margin-bottom: 10px;
+    width: 90%; /* Ajusta el ancho del curso para que quede algo de margen */
+    box-sizing: border-box; /* Incluye padding y borde en el ancho total */
+    text-align: center; /* Centra el texto dentro del curso */
+}
+
+.mis-cursos h2 {
+    position: sticky;
+    top: 0;
+    background-color: #ffffff;
+    z-index: 1000; /* Asegura que el título esté por encima del contenido al hacer scroll */
+    margin: 0;
+    padding: 10px;
+    width: 100%;
+    text-align: center;
+}

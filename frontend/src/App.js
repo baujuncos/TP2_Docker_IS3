@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import './App.css';
 import { ComponenteColumna } from './components/ComponenteColumna';
 import Login from './components/login';
+import { MisCursos } from './components/miscursos';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography } from '@mui/material';
 
 function App() {
@@ -156,6 +157,7 @@ function App() {
                         <Routes>
                             <Route path="/login" element={<Login onLogin={checkLoginStatus} />} />
                             <Route path="/" element={<MainContent courses={courses} onSubscribe={subscribeToCourse} validSearch={validSearch} openModal={openModal} />} />
+                            <Route path="/miscursos" element={<MisCursos />}></Route>
                         </Routes>
                     </div>
                 </div>
