@@ -142,11 +142,12 @@ function App() {
                         {loggedIn ? (
                             <>
                                 <button className="logout-text" onClick={handleLogout}>Sign Out</button>
-                                <img src="user-logo.png" className="user-logo" alt="user logo" />
+
                             </>
                         ) : (
                             <Link className="login-text" to="/login">Login</Link>
                         )}
+                        <img src="user-logo.png" className="user-logo" alt="user logo"/>
                     </div>
                 </header>
                 <div className="App-cuerpo">

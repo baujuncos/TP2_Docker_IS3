@@ -68,6 +68,13 @@ func Search(c *gin.Context) {
 		return
 	}
 
+	/*if len(results) == 0 {
+		c.JSON(http.StatusNotFound, domain.Response{
+			Message: "No results found",
+		})
+		return
+	}*/
+
 	c.JSON(http.StatusOK, domain.SearchResponse{
 		Results: results,
 	})

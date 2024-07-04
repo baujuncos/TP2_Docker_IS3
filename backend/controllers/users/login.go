@@ -15,7 +15,7 @@ func Login(c *gin.Context) {
 	if err := c.BindJSON(&creds); err != nil {
 		c.JSON(http.StatusBadRequest, domain.Response{Message: fmt.Sprintf("Invalid request: %s", err.Error())})
 		return
-	}
+	} //Verifica si hay error en la request
 
 	token, err := services.Login(creds.Username, creds.Password)
 
@@ -24,12 +24,12 @@ func Login(c *gin.Context) {
 			Message: fmt.Sprintf("Unauthorized login: %s", err.Error()),
 		})
 		return
-	}
+	} // Va en services
 
 	id, err := db.GetUserIDByUsername(creds.Username)
 
 	c.JSON(http.StatusOK, domain.LoginResponse{
 		IdUser: id,
 		Token:  token,
-	})
+	}) //Va en services
 }

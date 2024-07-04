@@ -40,17 +40,21 @@ func Login(username string, password string) (string, error) {
 	if strings.TrimSpace(password) == "" {
 		return "", errors.New("password is required")
 	}
+	//Verifica que todos los campos esten completos
 
 	hash := fmt.Sprintf("%x", sha1.Sum([]byte(password)))
+	//Hashea la contraseña
 
 	userDAO, err := db.GetUsuarioByUsername(username)
 	if err != nil {
 		return "", fmt.Errorf("error getting user from DB: %w", err)
 	}
+	//Se devuleve error si es que no se encontro el usuario
 
 	if hash != userDAO.Contrasena {
 		return "", errors.New("invalid credentials")
 	}
+	//Comparacion del hash guardado en la BD y el generado
 
 	token, err := generateJWT(username)
 	if err != nil {

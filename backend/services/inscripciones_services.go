@@ -19,7 +19,7 @@ func IsSubscribed(id_usuario int, id_curso int) (bool, error) {
 		return true, nil
 	}
 	return false, nil
-}
+} //Verifica si el usuario esta subscripto o no
 
 // Subscribe maneja la suscripción de un usuario a un curso
 func Subscribe(id_usuario int, id_curso int, fecha_inscripcion time.Time, comentario string) error {

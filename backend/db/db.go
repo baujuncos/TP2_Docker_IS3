@@ -227,7 +227,7 @@ func FindCourseByID(id int) (dao.Curso, error) {
 		return dao.Curso{}, fmt.Errorf("error al buscar el curso: %w", result.Error)
 	}
 	return curso, nil
-}
+} //Busca el curso
 
 func SubscribeUserToCourse(id_usuario int, id_curso int, fecha_inscripcion time.Time, comentario string) error {
 	inscripcion := dao.Inscripciones{
@@ -241,7 +241,7 @@ func SubscribeUserToCourse(id_usuario int, id_curso int, fecha_inscripcion time.
 		return fmt.Errorf("error al guardar la inscripción: %w", err)
 	}
 	return nil
-}
+} //Crea la inscripcion
 
 func SelectUserByID(id int) (dao.User, error) {
 	var user dao.User
@@ -253,7 +253,7 @@ func SelectUserByID(id int) (dao.User, error) {
 		return dao.User{}, fmt.Errorf("error al buscar el usuario: %w", result.Error)
 	}
 	return user, nil
-}
+} //Retorna el user
 
 func GetAllCursos() ([]dao.Curso, error) {
 	var cursos []dao.Curso
