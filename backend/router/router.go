@@ -32,13 +32,13 @@ func SetupRouter() *gin.Engine {
 		auth.GET("/usuarios/:id_usuario/cursos", users.ListarCursosUsuario) // Listar Cursos por usuario
 	}
 
-	/*admin := auth.Group("/admin")
+	admin := auth.Group("/admin")
 	admin.Use(middleware.AdminMiddleware())
 	{
 		admin.DELETE("/cursos/:id", cursos.DeleteCurso) // Eliminar Cursos
 		admin.PUT("/cursos/:id", cursos.UpdateCurso)    // Editar Curso
 		admin.POST("/cursos", cursos.CreateCurso)       // Crear Curso
-	}*/
+	}
 
 	r.GET("/courses/search", cursos.Search) // Buscar Curso por parámetros, REGULARIDAD
 	r.GET("/courses/:id", cursos.Get)       // Buscar curso por ID

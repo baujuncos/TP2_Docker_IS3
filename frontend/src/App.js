@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import './App.css';
+import { format, parseISO } from 'date-fns';
 import { ComponenteColumna } from './components/ComponenteColumna';
 import Login from './components/login';
 import { MisCursos } from './components/miscursos';
@@ -10,17 +11,18 @@ function App() {
     const [courses, setCourses] = useState([]);
     const [validSearch, setValidSearch] = useState(false);
     const [loggedIn, setLoggedIn] = useState(false); // Nuevo estado para verificar si el usuario ha iniciado sesión
+    const [userType, setUserType] = useState(false); // Nuevo estado para verificar el tipo de usuario
     const [selectedCourse, setSelectedCourse] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [editCourse, setEditCourse] = useState(null);
     const [newCourse, setNewCourse] = useState({
-        Titulo: '',
-        FechaInicio: '',
-        Categoria: '',
-        Archivo: '',
-        Descripcion: ''
+        Titulo: "",
+        FechaInicio: "",
+        Categoria: "",
+        Archivo: "",
+        Descripcion: ""
     });
 
     useEffect(() => {
@@ -127,10 +129,14 @@ function App() {
         const token = localStorage.getItem('token');
         if (token) {
             setLoggedIn(true);
+            const userType = localStorage.getItem('userType') === 'true'; // Lee el userType y conviértelo a booleano
+            setUserType(userType);
         } else {
             setLoggedIn(false);
+            setUserType(false); // Si no hay token, asegúrate de que userType sea false
         }
     };
+
 
     const handleLogout = () => {
         localStorage.removeItem('token');
@@ -167,7 +173,7 @@ function App() {
         setEditCourse(course);
         setNewCourse({
             Titulo: course.Titulo,
-            FechaInicio: course.Fecha_inicio,
+            FechaInicio: format(parseISO(course.Fecha_inicio), 'yyyy-MM-dd'), // Formatear la fecha
             Categoria: course.Categoria,
             Archivo: course.Archivo,
             Descripcion: course.Descripcion
@@ -187,13 +193,23 @@ function App() {
             return;
         }
 
-        fetch('http://localhost:8080/admin/cursos', {
+        // Convierte la fecha a formato ISO 8601 con una hora predeterminada
+        const fechaInicioISO = new Date(newCourse.FechaInicio).toISOString();
+
+        const courseToCreate = {
+            ...newCourse,
+            FechaInicio: fechaInicioISO
+        };
+
+        console.log('Datos del nuevo curso:', courseToCreate); // Agrega esto para depuración
+
+        fetch('http://localhost:8080/cursos', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify(newCourse)
+            body: JSON.stringify(courseToCreate)
         })
             .then(response => {
                 if (!response.ok) {
@@ -220,17 +236,30 @@ function App() {
             return;
         }
 
-        fetch(`http://localhost:8080/admin/cursos/${editCourse.id_curso}`, {
+        fetch(`http://localhost:8080/cursos/${editCourse.id_curso}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify(newCourse)
+            body: JSON.stringify({
+                Titulo: newCourse.Titulo,
+                Fecha_inicio: newCourse.FechaInicio,
+                Categoria: newCourse.Categoria,
+                Archivo: newCourse.Archivo,
+                Descripcion: newCourse.Descripcion
+            })
         })
             .then(response => {
                 if (!response.ok) {
-                    return response.json().then(err => { throw new Error(err.message); });
+                    return response.text().then(text => {
+                        try {
+                            const data = JSON.parse(text);
+                            throw new Error(data.message || 'Error en la respuesta del servidor.');
+                        } catch (error) {
+                            throw new Error('La respuesta del servidor no es un JSON válido.');
+                        }
+                    });
                 }
                 return response.json();
             })
@@ -244,7 +273,9 @@ function App() {
                 console.error('Error editando curso:', error.message);
                 alert(error.message); // Mostrar el error al usuario
             });
+
     };
+
 
     const deleteCourse = (courseId) => {
         const token = localStorage.getItem('token');
@@ -253,7 +284,7 @@ function App() {
             return;
         }
 
-        fetch(`http://localhost:8080/admin/cursos/${courseId}`, {
+        fetch(`http://localhost:8080/cursos/${courseId}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -292,7 +323,11 @@ function App() {
                         {loggedIn ? (
                             <>
                                 <button className="logout-text" onClick={handleLogout}>Sign Out</button>
-                                <button className="create-course-text" onClick={openCreateModal}>Crear Curso</button>
+                                {userType && (
+                                    <>
+                                        <button onClick={openCreateModal}>Crear Curso</button>
+                                    </>
+                                )}
                             </>
                         ) : (
                             <Link className="login-text" to="/login">Login</Link>
@@ -305,7 +340,7 @@ function App() {
                     <div className="contenido-principal">
                         <Routes>
                             <Route path="/login" element={<Login onLogin={checkLoginStatus} />} />
-                            <Route path="/" element={<MainContent courses={courses} onSubscribe={subscribeToCourse} validSearch={validSearch} openModal={openModal} onDelete={deleteCourse} onEdit={openEditModal} />} />
+                            <Route path="/" element={<MainContent courses={courses} onSubscribe={subscribeToCourse} validSearch={validSearch} openModal={openModal} onDelete={deleteCourse} onEdit={openEditModal} userType={userType}/>} />
                             <Route path="/miscursos" element={<MisCursos />}></Route>
                         </Routes>
                     </div>
@@ -433,7 +468,7 @@ function SearchBar({ onSearch }) {
     );
 }
 
-function MainContent({ courses, onSubscribe, validSearch, openModal, onDelete, onEdit }) {
+function MainContent({ courses, onSubscribe, validSearch, openModal, onDelete, onEdit, userType }) {
     const handleSubscribe = (courseId) => {
         onSubscribe(courseId);
     };
@@ -454,8 +489,13 @@ function MainContent({ courses, onSubscribe, validSearch, openModal, onDelete, o
                                 </Link>
                             </div>
                             <button onClick={() => handleSubscribe(course.id_curso)}>Suscribirse</button>
-                            <button onClick={() => onEdit(course)}>Editar</button>
-                            <button onClick={() => onDelete(course.id_curso)}>Eliminar</button>
+                            {userType && (
+                                <>
+                                    <button onClick={() => onEdit(course)}>Editar</button>
+                                    <button onClick={() => onDelete(course.id_curso)}>Eliminar</button>
+                                </>
+                            )}
+
                         </div>
                     </div>
                 ))}
@@ -463,6 +503,7 @@ function MainContent({ courses, onSubscribe, validSearch, openModal, onDelete, o
         </>
     );
 }
+
 
 function Modal({ course, closeModal }) {
     return (

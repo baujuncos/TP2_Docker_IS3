@@ -30,32 +30,36 @@ func DeleteCurso(cursoID string) error {
 func UpdateCurso(cursoID int, updatedCurso dao.Curso) error {
 	var curso dao.Curso
 	if err := db.DB.First(&curso, cursoID).Error; err != nil {
-		log.Printf("Error finding course: %v", err)
+		log.Printf("Error encontrando el curso: %v", err)
 		return err
 	}
 
-	log.Printf("Found course: %v", curso)
+	log.Printf("Curso encontrado: %v", curso)
 
-	// Actualiza solo los campos presentes en updatedCurso
+	// Actualiza sólo los campos presentes en updatedCurso
+	updates := make(map[string]interface{})
 	if updatedCurso.Titulo != "" {
-		curso.Titulo = updatedCurso.Titulo
+		updates["titulo"] = updatedCurso.Titulo
 	}
 	if !updatedCurso.FechaInicio.IsZero() {
-		curso.FechaInicio = updatedCurso.FechaInicio
+		updates["fecha_inicio"] = updatedCurso.FechaInicio
 	}
 	if updatedCurso.Categoria != "" {
-		curso.Categoria = updatedCurso.Categoria
+		updates["categoria"] = updatedCurso.Categoria
 	}
 	if updatedCurso.Archivo != "" {
-		curso.Archivo = updatedCurso.Archivo
+		updates["archivo"] = updatedCurso.Archivo
 	}
 	if updatedCurso.Descripcion != "" {
-		curso.Descripcion = updatedCurso.Descripcion
+		updates["descripcion"] = updatedCurso.Descripcion
 	}
 
-	log.Printf("Updated course: %v", curso)
+	if len(updates) > 0 {
+		log.Printf("Actualizando curso: %v", updates)
+		return db.DB.Model(&curso).Updates(updates).Error
+	}
 
-	return db.DB.Save(&curso).Error
+	return nil
 }
 
 // CreateCurso crea un nuevo curso

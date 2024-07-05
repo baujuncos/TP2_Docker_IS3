@@ -6,6 +6,7 @@ import (
 	"backend/services"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -25,18 +26,19 @@ func DeleteCurso(c *gin.Context) {
 func UpdateCurso(c *gin.Context) {
 	cursoID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid course ID"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "ID del curso inválido"})
 		return
 	}
 
 	var updatedCurso cursosDomain.Curso
 	if err := c.ShouldBindJSON(&updatedCurso); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Datos de curso inválidos"})
 		return
 	}
 
 	if err := services.UpdateCurso(cursoID, updatedCurso); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		log.Printf("Error al actualizar el curso: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error al actualizar el curso"})
 		return
 	}
 
