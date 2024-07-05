@@ -516,3 +516,29 @@ button:hover {
     width: 100%;
     text-align: center;
 }
+
+.admin-panel {
+    display: flex;
+    flex-direction: row;
+    padding: 20px;
+}
+
+.admin-panel .sidebar {
+    width: 250px;
+    background-color: #f4f4f4;
+    padding: 10px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.admin-panel .main-content {
+    flex: 1;
+    padding: 20px;
+}
+
+.admin-panel .section {
+    display: none;
+}
+
+.admin-panel .section.active {
+    display: block;
+}

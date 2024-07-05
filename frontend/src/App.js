@@ -4,7 +4,7 @@ import './App.css';
 import { ComponenteColumna } from './components/ComponenteColumna';
 import Login from './components/login';
 import { MisCursos } from './components/miscursos';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, TextField } from '@mui/material';
 
 function App() {
     const [courses, setCourses] = useState([]);
@@ -12,6 +12,16 @@ function App() {
     const [loggedIn, setLoggedIn] = useState(false); // Nuevo estado para verificar si el usuario ha iniciado sesión
     const [selectedCourse, setSelectedCourse] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [editCourse, setEditCourse] = useState(null);
+    const [newCourse, setNewCourse] = useState({
+        Titulo: '',
+        FechaInicio: '',
+        Categoria: '',
+        Archivo: '',
+        Descripcion: ''
+    });
 
     useEffect(() => {
         loadCourses();
@@ -66,7 +76,6 @@ function App() {
                 });
         }
     };
-
 
     const subscribeToCourse = (courseId) => {
         const token = localStorage.getItem('token');
@@ -139,6 +148,135 @@ function App() {
         setIsModalOpen(false);
     };
 
+    const openCreateModal = () => {
+        setIsCreateModalOpen(true);
+    };
+
+    const closeCreateModal = () => {
+        setIsCreateModalOpen(false);
+        setNewCourse({
+            Titulo: '',
+            FechaInicio: '',
+            Categoria: '',
+            Archivo: '',
+            Descripcion: ''
+        });
+    };
+
+    const openEditModal = (course) => {
+        setEditCourse(course);
+        setNewCourse({
+            Titulo: course.Titulo,
+            FechaInicio: course.Fecha_inicio,
+            Categoria: course.Categoria,
+            Archivo: course.Archivo,
+            Descripcion: course.Descripcion
+        });
+        setIsEditModalOpen(true);
+    };
+
+    const closeEditModal = () => {
+        setIsEditModalOpen(false);
+        setEditCourse(null);
+    };
+
+    const createCourse = () => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            alert('Debes iniciar sesión para crear un curso.');
+            return;
+        }
+
+        fetch('http://localhost:8080/admin/cursos', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(newCourse)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => { throw new Error(err.message); });
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Curso creado con éxito', data);
+                alert('Curso creado con éxito');
+                loadCourses();
+                closeCreateModal();
+            })
+            .catch(error => {
+                console.error('Error creando curso:', error.message);
+                alert(error.message); // Mostrar el error al usuario
+            });
+    };
+
+    const editCourseDetails = () => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            alert('Debes iniciar sesión para editar un curso.');
+            return;
+        }
+
+        fetch(`http://localhost:8080/admin/cursos/${editCourse.id_curso}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(newCourse)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => { throw new Error(err.message); });
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Curso editado con éxito', data);
+                alert('Curso editado con éxito');
+                loadCourses();
+                closeEditModal();
+            })
+            .catch(error => {
+                console.error('Error editando curso:', error.message);
+                alert(error.message); // Mostrar el error al usuario
+            });
+    };
+
+    const deleteCourse = (courseId) => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            alert('Debes iniciar sesión para eliminar un curso.');
+            return;
+        }
+
+        fetch(`http://localhost:8080/admin/cursos/${courseId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => { throw new Error(err.message); });
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Curso eliminado con éxito', data);
+                alert('Curso eliminado con éxito');
+                loadCourses();
+            })
+            .catch(error => {
+                console.error('Error eliminando curso:', error.message);
+                alert(error.message); // Mostrar el error al usuario
+            });
+    };
+
     return (
         <Router>
             <div className="App">
@@ -154,7 +292,7 @@ function App() {
                         {loggedIn ? (
                             <>
                                 <button className="logout-text" onClick={handleLogout}>Sign Out</button>
-
+                                <button className="create-course-text" onClick={openCreateModal}>Crear Curso</button>
                             </>
                         ) : (
                             <Link className="login-text" to="/login">Login</Link>
@@ -167,7 +305,7 @@ function App() {
                     <div className="contenido-principal">
                         <Routes>
                             <Route path="/login" element={<Login onLogin={checkLoginStatus} />} />
-                            <Route path="/" element={<MainContent courses={courses} onSubscribe={subscribeToCourse} validSearch={validSearch} openModal={openModal} />} />
+                            <Route path="/" element={<MainContent courses={courses} onSubscribe={subscribeToCourse} validSearch={validSearch} openModal={openModal} onDelete={deleteCourse} onEdit={openEditModal} />} />
                             <Route path="/miscursos" element={<MisCursos />}></Route>
                         </Routes>
                     </div>
@@ -175,6 +313,96 @@ function App() {
             </div>
             {isModalOpen && selectedCourse && (
                 <Modal course={selectedCourse} closeModal={closeModal} />
+            )}
+            {isCreateModalOpen && (
+                <Dialog open={true} onClose={closeCreateModal}>
+                    <DialogTitle>Crear Curso</DialogTitle>
+                    <DialogContent>
+                        <TextField
+                            label="Título"
+                            value={newCourse.Titulo}
+                            onChange={(e) => setNewCourse({ ...newCourse, Titulo: e.target.value })}
+                            fullWidth
+                        />
+                        <TextField
+                            label="Fecha de Inicio"
+                            type="date"
+                            value={newCourse.FechaInicio}
+                            onChange={(e) => setNewCourse({ ...newCourse, FechaInicio: e.target.value })}
+                            fullWidth
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                        />
+                        <TextField
+                            label="Categoría"
+                            value={newCourse.Categoria}
+                            onChange={(e) => setNewCourse({ ...newCourse, Categoria: e.target.value })}
+                            fullWidth
+                        />
+                        <TextField
+                            label="Archivo"
+                            value={newCourse.Archivo}
+                            onChange={(e) => setNewCourse({ ...newCourse, Archivo: e.target.value })}
+                            fullWidth
+                        />
+                        <TextField
+                            label="Descripción"
+                            value={newCourse.Descripcion}
+                            onChange={(e) => setNewCourse({ ...newCourse, Descripcion: e.target.value })}
+                            fullWidth
+                        />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={createCourse} color="primary">Crear</Button>
+                        <Button onClick={closeCreateModal} color="secondary">Cancelar</Button>
+                    </DialogActions>
+                </Dialog>
+            )}
+            {isEditModalOpen && editCourse && (
+                <Dialog open={true} onClose={closeEditModal}>
+                    <DialogTitle>Editar Curso</DialogTitle>
+                    <DialogContent>
+                        <TextField
+                            label="Título"
+                            value={newCourse.Titulo}
+                            onChange={(e) => setNewCourse({ ...newCourse, Titulo: e.target.value })}
+                            fullWidth
+                        />
+                        <TextField
+                            label="Fecha de Inicio"
+                            type="date"
+                            value={newCourse.FechaInicio}
+                            onChange={(e) => setNewCourse({ ...newCourse, FechaInicio: e.target.value })}
+                            fullWidth
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                        />
+                        <TextField
+                            label="Categoría"
+                            value={newCourse.Categoria}
+                            onChange={(e) => setNewCourse({ ...newCourse, Categoria: e.target.value })}
+                            fullWidth
+                        />
+                        <TextField
+                            label="Archivo"
+                            value={newCourse.Archivo}
+                            onChange={(e) => setNewCourse({ ...newCourse, Archivo: e.target.value })}
+                            fullWidth
+                        />
+                        <TextField
+                            label="Descripción"
+                            value={newCourse.Descripcion}
+                            onChange={(e) => setNewCourse({ ...newCourse, Descripcion: e.target.value })}
+                            fullWidth
+                        />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={editCourseDetails} color="primary">Guardar</Button>
+                        <Button onClick={closeEditModal} color="secondary">Cancelar</Button>
+                    </DialogActions>
+                </Dialog>
             )}
         </Router>
     );
@@ -205,7 +433,7 @@ function SearchBar({ onSearch }) {
     );
 }
 
-function MainContent({ courses, onSubscribe, validSearch, openModal }) {
+function MainContent({ courses, onSubscribe, validSearch, openModal, onDelete, onEdit }) {
     const handleSubscribe = (courseId) => {
         onSubscribe(courseId);
     };
@@ -217,26 +445,20 @@ function MainContent({ courses, onSubscribe, validSearch, openModal }) {
             <h1 className="titulo">Bienvenido a WebLearn!</h1>
             <p>Explora un mundo de aprendizaje ilimitado con nuestra plataforma de cursos en línea. Desde desarrollo de habilidades profesionales hasta pasatiempos creativos, encontrarás una amplia variedad de cursos diseñados para enriquecer tu vida personal y profesional.</p>
             <div className="Courses">
-                {validSearch ? (
-                    courses.length > 0 ? (
-                        courses.map(course => (
-                            <div key={course.id_curso} className="Course">
-                                <div className="Course-details">
-                                    <div>
-                                        <Link to="#" className="Course-title" onClick={() => openModal(course)}>
-                                            {course.Titulo}
-                                        </Link>
-                                    </div>
-                                    <button onClick={() => handleSubscribe(course.id_curso)}>Suscribirse</button>
-                                </div>
+                {courses.map(course => (
+                    <div key={course.id_curso} className="Course">
+                        <div className="Course-details">
+                            <div>
+                                <Link to="#" className="Course-title" onClick={() => openModal(course)}>
+                                    {course.Titulo}
+                                </Link>
                             </div>
-                        ))
-                    ) : (
-                        <p className="mensaje-error-busqueda"><strong>No se encontraron cursos para la búsqueda</strong></p>
-                    )
-                ) : (
-                    <p className="mensaje-error-busqueda"><strong>No se encontraron cursos para la búsqueda</strong></p>
-                )}
+                            <button onClick={() => handleSubscribe(course.id_curso)}>Suscribirse</button>
+                            <button onClick={() => onEdit(course)}>Editar</button>
+                            <button onClick={() => onDelete(course.id_curso)}>Eliminar</button>
+                        </div>
+                    </div>
+                ))}
             </div>
         </>
     );
