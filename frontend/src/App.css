@@ -542,3 +542,109 @@ button:hover {
 .admin-panel .section.active {
     display: block;
 }
+
+/* Estilos para los botones de la pantalla modal */
+.upload-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px 0;
+}
+
+.upload-form input[type="file"] {
+    display: none; /* Oculta el input de archivo real */
+}
+
+.upload-form label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.upload-form label:hover {
+    background-color: #0056b3;
+}
+
+.upload-form button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.upload-form button:hover {
+    background-color: #218838;
+}
+
+/* Estilos para el historial de archivos subidos */
+.uploaded-files {
+    margin-top: 20px;
+    width: 100%;
+    text-align: left;
+}
+
+.uploaded-files h3 {
+    font-size: 20px;
+    color: #0077b6;
+    margin-bottom: 10px;
+}
+
+.uploaded-files ul {
+    list-style: none;
+    padding: 0;
+}
+
+.uploaded-files li {
+    margin: 5px 0;
+}
+
+.uploaded-files a {
+    text-decoration: none;
+    color: #007BFF;
+}
+
+.uploaded-files a:hover {
+    color: #0056b3;
+}
+
+
+/* Estilos para la sección de archivos subidos */
+.ArchivosSubidos {
+    padding: 20px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    height: calc(100vh - 100px); /* Ajusta la altura */
+    overflow-y: auto; /* Añade desplazamiento vertical */
+}
+
+.ArchivosSubidos h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #0077b6; /* Color del título */
+}
+
+.File {
+    margin: 10px 0;
+    font-size: 18px;
+    color: #333;
+}
+
+.File a {
+    text-decoration: none;
+    color: #007BFF;
+    transition: color 0.3s;
+}
+
+.File a:hover {
+    color: #0056b3;
+}

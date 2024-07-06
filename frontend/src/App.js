@@ -6,9 +6,11 @@ import { ComponenteColumna } from './components/ComponenteColumna';
 import Login from './components/login';
 import { MisCursos } from './components/miscursos';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, TextField } from '@mui/material';
+import UploadIcon from '@mui/icons-material/Upload';  // Asegúrate de instalar @mui/icons-material
 
 function App() {
     const [courses, setCourses] = useState([]);
+    const [files, setFiles] = useState([]); // Estado para los archivos subidos
     const [validSearch, setValidSearch] = useState(false);
     const [loggedIn, setLoggedIn] = useState(false); // Nuevo estado para verificar si el usuario ha iniciado sesión
     const [userType, setUserType] = useState(false); // Nuevo estado para verificar el tipo de usuario
@@ -27,6 +29,7 @@ function App() {
 
     useEffect(() => {
         loadCourses();
+        loadFiles(); // Cargar archivos al montar el componente
         checkLoginStatus(); // Verificar el estado de inicio de sesión cuando se monta el componente
     }, []);
 
@@ -49,6 +52,22 @@ function App() {
             })
             .catch(error => {
                 console.error('Error fetching courses:', error);
+            });
+    };
+
+    const loadFiles = () => {
+        fetch('http://localhost:8080/files')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch files');
+                }
+                return response.json();
+            })
+            .then(data => {
+                setFiles(data);
+            })
+            .catch(error => {
+                console.error('Error fetching files:', error);
             });
     };
 
@@ -308,218 +327,289 @@ function App() {
             });
     };
 
-    return (
-        <Router>
-            <div className="App">
-                <header className="App-header">
-                    <div className="logoytitulo">
-                        <img src="logoweb.png" className="logoweb" alt="logo" />
-                        <h2 className="nombreweb">WebLearn</h2>
-                    </div>
-                    <div className="buscador">
-                        <SearchBar onSearch={searchCourses} />
-                    </div>
-                    <div className="user-login">
-                        {loggedIn ? (
-                            <>
-                                <button className="logout-text" onClick={handleLogout}>Sign Out</button>
-                                {userType && (
-                                    <>
-                                        <button onClick={openCreateModal}>Crear Curso</button>
-                                    </>
-                                )}
-                            </>
-                        ) : (
-                            <Link className="login-text" to="/login">Login</Link>
-                        )}
-                        <img src="user-logo.png" className="user-logo" alt="user logo"/>
-                    </div>
-                </header>
-                <div className="App-cuerpo">
-                    <ComponenteColumna />
-                    <div className="contenido-principal">
-                        <Routes>
-                            <Route path="/login" element={<Login onLogin={checkLoginStatus} />} />
-                            <Route path="/" element={<MainContent courses={courses} onSubscribe={subscribeToCourse} validSearch={validSearch} openModal={openModal} onDelete={deleteCourse} onEdit={openEditModal} userType={userType}/>} />
-                            <Route path="/miscursos" element={<MisCursos />}></Route>
-                        </Routes>
-                    </div>
-                </div>
-            </div>
-            {isModalOpen && selectedCourse && (
-                <Modal course={selectedCourse} closeModal={closeModal} />
-            )}
-            {isCreateModalOpen && (
-                <Dialog open={true} onClose={closeCreateModal}>
-                    <DialogTitle>Crear Curso</DialogTitle>
-                    <DialogContent>
-                        <TextField
-                            label="Título"
-                            value={newCourse.Titulo}
-                            onChange={(e) => setNewCourse({ ...newCourse, Titulo: e.target.value })}
-                            fullWidth
-                        />
-                        <TextField
-                            label="Fecha de Inicio"
-                            type="date"
-                            value={newCourse.FechaInicio}
-                            onChange={(e) => setNewCourse({ ...newCourse, FechaInicio: e.target.value })}
-                            fullWidth
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                        />
-                        <TextField
-                            label="Categoría"
-                            value={newCourse.Categoria}
-                            onChange={(e) => setNewCourse({ ...newCourse, Categoria: e.target.value })}
-                            fullWidth
-                        />
-                        <TextField
-                            label="Archivo"
-                            value={newCourse.Archivo}
-                            onChange={(e) => setNewCourse({ ...newCourse, Archivo: e.target.value })}
-                            fullWidth
-                        />
-                        <TextField
-                            label="Descripción"
-                            value={newCourse.Descripcion}
-                            onChange={(e) => setNewCourse({ ...newCourse, Descripcion: e.target.value })}
-                            fullWidth
-                        />
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={createCourse} color="primary">Crear</Button>
-                        <Button onClick={closeCreateModal} color="secondary">Cancelar</Button>
-                    </DialogActions>
-                </Dialog>
-            )}
-            {isEditModalOpen && editCourse && (
-                <Dialog open={true} onClose={closeEditModal}>
-                    <DialogTitle>Editar Curso</DialogTitle>
-                    <DialogContent>
-                        <TextField
-                            label="Título"
-                            value={newCourse.Titulo}
-                            onChange={(e) => setNewCourse({ ...newCourse, Titulo: e.target.value })}
-                            fullWidth
-                        />
-                        <TextField
-                            label="Fecha de Inicio"
-                            type="date"
-                            value={newCourse.FechaInicio}
-                            onChange={(e) => setNewCourse({ ...newCourse, FechaInicio: e.target.value })}
-                            fullWidth
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                        />
-                        <TextField
-                            label="Categoría"
-                            value={newCourse.Categoria}
-                            onChange={(e) => setNewCourse({ ...newCourse, Categoria: e.target.value })}
-                            fullWidth
-                        />
-                        <TextField
-                            label="Archivo"
-                            value={newCourse.Archivo}
-                            onChange={(e) => setNewCourse({ ...newCourse, Archivo: e.target.value })}
-                            fullWidth
-                        />
-                        <TextField
-                            label="Descripción"
-                            value={newCourse.Descripcion}
-                            onChange={(e) => setNewCourse({ ...newCourse, Descripcion: e.target.value })}
-                            fullWidth
-                        />
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={editCourseDetails} color="primary">Guardar</Button>
-                        <Button onClick={closeEditModal} color="secondary">Cancelar</Button>
-                    </DialogActions>
-                </Dialog>
-            )}
-        </Router>
-    );
-}
-
-function SearchBar({ onSearch }) {
-    const [query, setQuery] = useState('');
-
-    const handleSearchChange = (e) => {
-        setQuery(e.target.value);
-    };
-
-    const handleSearchSubmit = (e) => {
-        e.preventDefault();
-        onSearch(query);
-    };
-
-    return (
-        <form onSubmit={handleSearchSubmit}>
-            <input
-                type="text"
-                className="buscador"
-                placeholder="Buscar cursos..."
-                value={query}
-                onChange={handleSearchChange}
-            />
-        </form>
-    );
-}
-
-function MainContent({ courses, onSubscribe, validSearch, openModal, onDelete, onEdit, userType }) {
-    const handleSubscribe = (courseId) => {
-        onSubscribe(courseId);
-    };
-
-    console.log('Received courses:', courses);
-
-    return (
-        <>
-            <h1 className="titulo">Bienvenido a WebLearn!</h1>
-            <p>Explora un mundo de aprendizaje ilimitado con nuestra plataforma de cursos en línea. Desde desarrollo de habilidades profesionales hasta pasatiempos creativos, encontrarás una amplia variedad de cursos diseñados para enriquecer tu vida personal y profesional.</p>
-            <div className="Courses">
-                {courses.map(course => (
-                    <div key={course.id_curso} className="Course">
-                        <div className="Course-details">
-                            <div>
-                                <Link to="#" className="Course-title" onClick={() => openModal(course)}>
-                                    {course.Titulo}
-                                </Link>
-                            </div>
-                            <button onClick={() => handleSubscribe(course.id_curso)}>Suscribirse</button>
-                            {userType && (
+        return (
+            <Router>
+                <div className="App">
+                    <header className="App-header">
+                        <div className="logoytitulo">
+                            <img src="logoweb.png" className="logoweb" alt="logo" />
+                            <h2 className="nombreweb">WebLearn</h2>
+                        </div>
+                        <div className="buscador">
+                            <SearchBar onSearch={searchCourses} />
+                        </div>
+                        <div className="user-login">
+                            {loggedIn ? (
                                 <>
-                                    <button onClick={() => onEdit(course)}>Editar</button>
-                                    <button onClick={() => onDelete(course.id_curso)}>Eliminar</button>
+                                    <button className="logout-text" onClick={handleLogout}>Sign Out</button>
+                                    {userType && (
+                                        <>
+                                            <button onClick={openCreateModal}>Crear Curso</button>
+                                        </>
+                                    )}
                                 </>
+                            ) : (
+                                <Link className="login-text" to="/login">Login</Link>
                             )}
-
+                            <img src="user-logo.png" className="user-logo" alt="user logo"/>
+                        </div>
+                    </header>
+                    <div className="App-cuerpo">
+                        <ComponenteColumna />
+                        <div className="contenido-principal">
+                            <Routes>
+                                <Route path="/login" element={<Login onLogin={checkLoginStatus} />} />
+                                <Route path="/" element={<MainContent courses={courses} files={files} onSubscribe={subscribeToCourse} validSearch={validSearch} openModal={openModal} onDelete={deleteCourse} onEdit={openEditModal} userType={userType} />} />
+                                <Route path="/miscursos" element={<MisCursos />}></Route>
+                            </Routes>
                         </div>
                     </div>
-                ))}
-            </div>
-        </>
-    );
-}
-
-
-function Modal({ course, closeModal }) {
-    return (
-        <Dialog open={true} onClose={closeModal}>
-            <DialogTitle>{course.Titulo}</DialogTitle>
-            <DialogContent>
-                <Typography variant="body1">{course.Descripcion}</Typography>
-                <div className="curso-categoria">
-                    <Typography variant="body2"><strong>Categoría:</strong> {course.Categoria}</Typography>
                 </div>
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={closeModal} color="primary">Cerrar</Button>
-            </DialogActions>
-        </Dialog>
-    );
-}
+                {isModalOpen && selectedCourse && (
+                    <Modal course={selectedCourse} closeModal={closeModal} onUpload={() => { loadCourses(); loadFiles(); }} />
+                )}
+                {isCreateModalOpen && (
+                    <Dialog open={true} onClose={closeCreateModal}>
+                        <DialogTitle>Crear Curso</DialogTitle>
+                        <DialogContent>
+                            <TextField
+                                label="Título"
+                                value={newCourse.Titulo}
+                                onChange={(e) => setNewCourse({ ...newCourse, Titulo: e.target.value })}
+                                fullWidth
+                            />
+                            <TextField
+                                label="Fecha de Inicio"
+                                type="date"
+                                value={newCourse.FechaInicio}
+                                onChange={(e) => setNewCourse({ ...newCourse, FechaInicio: e.target.value })}
+                                fullWidth
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                            />
+                            <TextField
+                                label="Categoría"
+                                value={newCourse.Categoria}
+                                onChange={(e) => setNewCourse({ ...newCourse, Categoria: e.target.value })}
+                                fullWidth
+                            />
+                            <TextField
+                                label="Archivo"
+                                value={newCourse.Archivo}
+                                onChange={(e) => setNewCourse({ ...newCourse, Archivo: e.target.value })}
+                                fullWidth
+                            />
+                            <TextField
+                                label="Descripción"
+                                value={newCourse.Descripcion}
+                                onChange={(e) => setNewCourse({ ...newCourse, Descripcion: e.target.value })}
+                                fullWidth
+                            />
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={createCourse} color="primary">Crear</Button>
+                            <Button onClick={closeCreateModal} color="secondary">Cancelar</Button>
+                        </DialogActions>
+                    </Dialog>
+                )}
+                {isEditModalOpen && editCourse && (
+                    <Dialog open={true} onClose={closeEditModal}>
+                        <DialogTitle>Editar Curso</DialogTitle>
+                        <DialogContent>
+                            <TextField
+                                label="Título"
+                                value={newCourse.Titulo}
+                                onChange={(e) => setNewCourse({ ...newCourse, Titulo: e.target.value })}
+                                fullWidth
+                            />
+                            <TextField
+                                label="Fecha de Inicio"
+                                type="date"
+                                value={newCourse.FechaInicio}
+                                onChange={(e) => setNewCourse({ ...newCourse, FechaInicio: e.target.value })}
+                                fullWidth
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                            />
+                            <TextField
+                                label="Categoría"
+                                value={newCourse.Categoria}
+                                onChange={(e) => setNewCourse({ ...newCourse, Categoria: e.target.value })}
+                                fullWidth
+                            />
+                            <TextField
+                                label="Archivo"
+                                value={newCourse.Archivo}
+                                onChange={(e) => setNewCourse({ ...newCourse, Archivo: e.target.value })}
+                                fullWidth
+                            />
+                            <TextField
+                                label="Descripción"
+                                value={newCourse.Descripcion}
+                                onChange={(e) => setNewCourse({ ...newCourse, Descripcion: e.target.value })}
+                                fullWidth
+                            />
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={editCourseDetails} color="primary">Guardar</Button>
+                            <Button onClick={closeEditModal} color="secondary">Cancelar</Button>
+                        </DialogActions>
+                    </Dialog>
+                )}
+            </Router>
+        );
+    }
 
-export default App;
+    function SearchBar({ onSearch }) {
+        const [query, setQuery] = useState('');
+
+        const handleSearchChange = (e) => {
+            setQuery(e.target.value);
+        };
+
+        const handleSearchSubmit = (e) => {
+            e.preventDefault();
+            onSearch(query);
+        };
+
+        return (
+            <form onSubmit={handleSearchSubmit}>
+                <input
+                    type="text"
+                    className="buscador"
+                    placeholder="Buscar cursos..."
+                    value={query}
+                    onChange={handleSearchChange}
+                />
+            </form>
+        );
+    }
+
+    function MainContent({ courses, files, onSubscribe, validSearch, openModal, onDelete, onEdit, userType }) {
+        const handleSubscribe = (courseId) => {
+            onSubscribe(courseId);
+        };
+
+        console.log('Received courses:', courses);
+
+        return (
+            <>
+                <h1 className="titulo">Bienvenido a WebLearn!</h1>
+                <p>Explora un mundo de aprendizaje ilimitado con nuestra plataforma de cursos en línea. Desde desarrollo de habilidades profesionales hasta pasatiempos creativos, encontrarás una amplia variedad de cursos diseñados para enriquecer tu vida personal y profesional.</p>
+                <div className="Courses">
+                    {courses.map(course => (
+                        <div key={course.id_curso} className="Course">
+                            <div className="Course-details">
+                                <div>
+                                    <Link to="#" className="Course-title" onClick={() => openModal(course)}>
+                                        {course.Titulo}
+                                    </Link>
+                                </div>
+                                <button onClick={() => handleSubscribe(course.id_curso)}>Suscribirse</button>
+                                {userType && (
+                                    <>
+                                        <button onClick={() => onEdit(course)}>Editar</button>
+                                        <button onClick={() => onDelete(course.id_curso)}>Eliminar</button>
+                                    </>
+                                )}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+                <div className="Files">
+                    <h2>Archivos Subidos</h2>
+                    {files.map(file => (
+                        <div key={file} className="File">
+                            <a href={`http://localhost:8080/uploads/${file}`} target="_blank" rel="noopener noreferrer">{file}</a>
+                        </div>
+                    ))}
+                </div>
+            </>
+        );
+    }
+
+    function Modal({ course, closeModal, onUpload }) {
+        const [file, setFile] = useState(null);
+        const [uploadedFileUrl, setUploadedFileUrl] = useState("");
+
+        const handleFileChange = (e) => {
+            setFile(e.target.files[0]);
+        };
+
+        const handleSubmit = async (e) => {
+            e.preventDefault();
+            if (!file) {
+                alert("Por favor, seleccione un archivo para subir.");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("file", file);
+
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert('Debes iniciar sesión para subir archivos.');
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:8080/upload', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: formData,
+                });
+
+                if (!response.ok) {
+                    throw new Error('Error subiendo el archivo.');
+                }
+
+                const result = await response.json();
+                alert(result.message);
+                setUploadedFileUrl(`http://localhost:8080/uploads/${file.name}`);
+                onUpload();  // Callback para actualizar la lista de archivos o cursos si es necesario
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error subiendo el archivo');
+            }
+        };
+
+        return (
+            <Dialog open={true} onClose={closeModal}>
+                <DialogTitle>{course.Titulo}</DialogTitle>
+                <DialogContent>
+                    <Typography variant="body1">{course.Descripcion}</Typography>
+                    <div className="curso-categoria">
+                        <Typography variant="body2"><strong>Categoría:</strong> {course.Categoria}</Typography>
+                    </div>
+                    {/* Botón para subir archivos */}
+                    <form className="upload-form" onSubmit={handleSubmit}>
+                        <input type="file" onChange={handleFileChange} style={{ display: 'none' }} id="upload-button" />
+                        <label htmlFor="upload-button">
+                            <Button variant="contained" component="span" startIcon={<UploadIcon />}>
+                                Subir Archivo
+                            </Button>
+                        </label>
+                        <button type="submit">Subir</button>
+                    </form>
+                    {/* Mostrar enlace o vista previa del archivo subido */}
+                    {uploadedFileUrl && (
+                        <div>
+                            <Typography variant="body2">Archivo subido:</Typography>
+                            <a href={uploadedFileUrl} target="_blank" rel="noopener noreferrer">
+                                {file.name}
+                            </a>
+                        </div>
+                    )}
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={closeModal} color="primary">Cerrar</Button>
+                </DialogActions>
+            </Dialog>
+        );
+    }
+
+    export default App;

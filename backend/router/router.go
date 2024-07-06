@@ -2,6 +2,7 @@ package router
 
 import (
 	"backend/controllers/cursos"
+	"backend/controllers/files"
 	"backend/controllers/inscripciones"
 	"backend/controllers/users"
 	"backend/middleware"
@@ -30,6 +31,8 @@ func SetupRouter() *gin.Engine {
 	{
 		auth.POST("/subscriptions", inscripciones.Subscribe)                // Inscribirse a Curso, REGULARIDAD
 		auth.GET("/usuarios/:id_usuario/cursos", users.ListarCursosUsuario) // Listar Cursos por usuario
+		auth.POST("/upload", files.UploadFile)                              // Ruta protegida para subir archivos
+
 	}
 
 	admin := auth.Group("/admin")
@@ -43,7 +46,10 @@ func SetupRouter() *gin.Engine {
 	r.GET("/courses/search", cursos.Search) // Buscar Curso por parámetros, REGULARIDAD
 	r.GET("/courses/:id", cursos.Get)       // Buscar curso por ID
 	r.GET("/cursos", cursos.GetAllCursos)   // Obtiene TODOS los cursos, REGULARIDAD
+	r.GET("/files", files.ListFiles)        // Obtener lista de archivos subidos
 
+	r.Static("/uploads", "./uploads")
+	
 	r.DELETE("/cursos/:id", cursos.DeleteCurso) // Eliminar Cursos
 	r.PUT("/cursos/:id", cursos.UpdateCurso)    // Editar Curso
 	r.POST("/cursos", cursos.CreateCurso)       // Crear Curso
