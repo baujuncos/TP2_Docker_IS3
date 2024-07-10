@@ -121,3 +121,12 @@ func GetAllCursos() ([]domain.Curso, error) {
 
 	return domainCursos, nil
 }
+
+// GetCommentsByCourseID maneja la obtención de comentarios de un curso
+func GetCommentsByCourseID(courseID int) ([]dao.Inscripciones, error) {
+	comments, err := db.GetCommentsByCourseID(courseID)
+	if err != nil {
+		return nil, fmt.Errorf("error al obtener comentarios del curso %d: %w", courseID, err)
+	}
+	return comments, nil
+}

@@ -43,13 +43,14 @@ func SetupRouter() *gin.Engine {
 		admin.POST("/cursos", cursos.CreateCurso)       // Crear Curso
 	}
 
+	r.GET("/courses/:id/comments", cursos.GetComments)
 	r.GET("/courses/search", cursos.Search) // Buscar Curso por parámetros, REGULARIDAD
 	r.GET("/courses/:id", cursos.Get)       // Buscar curso por ID
 	r.GET("/cursos", cursos.GetAllCursos)   // Obtiene TODOS los cursos, REGULARIDAD
 	r.GET("/files", files.ListFiles)        // Obtener lista de archivos subidos
 
 	r.Static("/uploads", "./uploads")
-	
+
 	r.DELETE("/cursos/:id", cursos.DeleteCurso) // Eliminar Cursos
 	r.PUT("/cursos/:id", cursos.UpdateCurso)    // Editar Curso
 	r.POST("/cursos", cursos.CreateCurso)       // Crear Curso

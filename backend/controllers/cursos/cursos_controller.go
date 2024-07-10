@@ -12,6 +12,40 @@ import (
 	"strings"
 )
 
+func GetComments(c *gin.Context) {
+	// Obtiene el parámetro de ruta 'id' del curso
+	idCursoStr := c.Param("id")
+
+	// Convierte el parámetro de ruta 'id' de string a int
+	idCurso, err := strconv.Atoi(idCursoStr)
+	if err != nil {
+		// Si hay un error en la conversión, devuelve un error de solicitud incorrecta
+		c.JSON(http.StatusBadRequest, gin.H{"error": "ID de curso inválido"})
+		return
+	}
+
+	// Llama al servicio para obtener los comentarios del curso con el ID especificado
+	comentarios, err := services.GetCommentsByCourseID(idCurso)
+	if err != nil {
+		// Si hay un error al obtener los comentarios, devuelve un error interno del servidor
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Crea un slice para almacenar solo los comentarios no nulos
+	var soloComentarios []string
+	// Itera sobre los comentarios obtenidos
+	for _, comentario := range comentarios {
+		// Si el comentario no es una cadena vacía (nulo), lo agrega al slice
+		if comentario.Comentario != "" {
+			soloComentarios = append(soloComentarios, comentario.Comentario)
+		}
+	}
+
+	// Devuelve una respuesta JSON con los comentarios no nulos
+	c.JSON(http.StatusOK, gin.H{"comentarios": soloComentarios})
+}
+
 func DeleteCurso(c *gin.Context) {
 	cursoID := c.Param("id")
 

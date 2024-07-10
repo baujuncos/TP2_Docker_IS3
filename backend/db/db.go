@@ -17,9 +17,9 @@ var DB *gorm.DB
 var sqlDB *sql.DB
 
 func InitDB() {
-	//dsn := "root:ladrillo753@tcp(127.0.0.1:3306)/pbbv?charset=utf8mb3&parseTime=True&loc=Local"
+	dsn := "root:ladrillo753@tcp(127.0.0.1:3306)/pbbv?charset=utf8mb3&parseTime=True&loc=Local"
 	//dsn := "root:belusql1@tcp(127.0.0.1:3306)/pbbv?charset=utf8mb3&parseTime=True&loc=Local"
-	dsn := "root:BMKvr042@tcp(127.0.0.1:3306)/pbbv?charset=utf8mb3&parseTime=True&loc=Local"
+	//dsn := "root:BMKvr042@tcp(127.0.0.1:3306)/pbbv?charset=utf8mb3&parseTime=True&loc=Local"
 	//dsn := "root:RaTa8855@tcp(127.0.0.1:3306)/pbbv?charset=utf8mb3&parseTime=True&loc=Local"
 	var err error
 	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
@@ -113,12 +113,12 @@ func SeedDB() {
 
 	// Crear inscripciones
 	inscripciones := []dao.Inscripciones{
-		{IdUsuario: 1, IdCurso: 1, FechaInscripcion: time.Now(), Comentario: ""},
-		{IdUsuario: 2, IdCurso: 2, FechaInscripcion: time.Now(), Comentario: ""},
-		{IdUsuario: 3, IdCurso: 3, FechaInscripcion: time.Now(), Comentario: ""},
+		{IdUsuario: 1, IdCurso: 1, FechaInscripcion: time.Now(), Comentario: "Espero sobrevivir a este curso y no abandonar"},
+		{IdUsuario: 2, IdCurso: 2, FechaInscripcion: time.Now(), Comentario: "Soy el profesor, sean respetuosos en sus comentarios gente"},
+		{IdUsuario: 3, IdCurso: 3, FechaInscripcion: time.Now(), Comentario: "Aguante TAYLOR SWIFTTT"},
 		{IdUsuario: 4, IdCurso: 4, FechaInscripcion: time.Now(), Comentario: ""},
 		{IdUsuario: 5, IdCurso: 5, FechaInscripcion: time.Now(), Comentario: ""},
-		{IdUsuario: 1, IdCurso: 2, FechaInscripcion: time.Now(), Comentario: ""},
+		{IdUsuario: 1, IdCurso: 2, FechaInscripcion: time.Now(), Comentario: "Cuando empezaba el curso?"},
 	}
 	for _, inscripcion := range inscripciones {
 		DB.FirstOrCreate(&inscripcion, dao.Inscripciones{IdUsuario: inscripcion.IdUsuario, IdCurso: inscripcion.IdCurso})
@@ -138,6 +138,16 @@ func DeleteInscripcionesByCursoID(cursoID string) error {
 		return fmt.Errorf("error al eliminar inscripciones: %w", err)
 	}
 	return nil
+}
+
+func GetCommentsByCourseID(courseID int) ([]dao.Inscripciones, error) {
+	var inscripciones []dao.Inscripciones
+	result := DB.Where("id_curso = ?", courseID).Find(&inscripciones)
+	if result.Error != nil {
+		log.Printf("Error al obtener comentarios: %v\n", result.Error)
+		return nil, result.Error
+	}
+	return inscripciones, nil
 }
 
 func GetUserIDByUsername(username string) (int, error) {
