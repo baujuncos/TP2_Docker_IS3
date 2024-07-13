@@ -4,6 +4,7 @@ import './App.css';
 import { format, parseISO } from 'date-fns';
 import { ComponenteColumna } from './components/ComponenteColumna';
 import Login from './components/login';
+import { useCookies } from 'react-cookie';
 import CommentModal from './components/comment'; // Importar el nuevo modal para suscripción
 import { MisCursos } from './components/miscursos';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, TextField } from '@mui/material';
@@ -11,6 +12,7 @@ import UploadIcon from '@mui/icons-material/Upload';  // Asegúrate de instalar 
 import { List, ListItem, ListItemText } from '@mui/material';
 
 function App() {
+    const [cookies, setCookie, removeCookie] = useCookies(['token']);
     const [courses, setCourses] = useState([]);
     const [files, setFiles] = useState([]); // Estado para los archivos subidos
     const [validSearch, setValidSearch] = useState(false);
@@ -101,7 +103,7 @@ function App() {
     };
 
     const subscribeToCourse = (courseId, comment) => {
-        const token = localStorage.getItem('token');
+        const token = cookies.token;
         if (!token) {
             alert('Debes iniciar sesión para suscribirte a un curso.');
             return;
@@ -147,7 +149,7 @@ function App() {
 
 
     const checkLoginStatus = () => {
-        const token = localStorage.getItem('token');
+        const token = cookies.token;
         if (token) {
             setLoggedIn(true);
             const userType = localStorage.getItem('userType') === 'true'; // Lee el userType y conviértelo a booleano
@@ -158,11 +160,11 @@ function App() {
         }
     };
 
-
     const handleLogout = () => {
-        localStorage.removeItem('token');
         localStorage.removeItem('userId');
+        localStorage.removeItem('userType');
         setLoggedIn(false);
+        removeCookie('token', { path: '/' });
         window.location.reload();
     };
 
@@ -209,7 +211,7 @@ function App() {
     };
 
     const createCourse = () => {
-        const token = localStorage.getItem('token');
+        const token = cookies.token;
         if (!token) {
             alert('Debes iniciar sesión para crear un curso.');
             return;
@@ -252,7 +254,7 @@ function App() {
     };
 
     const editCourseDetails = () => {
-        const token = localStorage.getItem('token');
+        const token = cookies.token;
         if (!token) {
             alert('Debes iniciar sesión para editar un curso.');
             return;
@@ -300,7 +302,7 @@ function App() {
 
 
     const deleteCourse = (courseId) => {
-        const token = localStorage.getItem('token');
+        const token = cookies.token;
         if (!token) {
             alert('Debes iniciar sesión para eliminar un curso.');
             return;
@@ -546,6 +548,7 @@ function MainContent({ courses, files, onSubscribe, validSearch, openModal, onDe
 }
 
 const Modal = ({ course, closeModal, onUpload }) => {
+    const [cookies, setCookie, removeCookie] = useCookies(['token']);
     const [file, setFile] = useState(null);
     const [uploadedFileUrl, setUploadedFileUrl] = useState("");
     const [isCommentsModalOpen, setIsCommentsModalOpen] = useState(false);
@@ -565,7 +568,7 @@ const Modal = ({ course, closeModal, onUpload }) => {
         const formData = new FormData();
         formData.append("file", file);
 
-        const token = localStorage.getItem('token');
+        const token = cookies.token;
         if (!token) {
             alert('Debes iniciar sesión para subir archivos.');
             return;

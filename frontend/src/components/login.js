@@ -4,7 +4,7 @@ import { useCookies } from 'react-cookie';
 const Login = ({ onLogin }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [cookies, setCookie] = useCookies(['token', 'userId', 'userType']);
+    const [cookies, setCookie] = useCookies(['token']);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
@@ -30,12 +30,9 @@ const Login = ({ onLogin }) => {
             const { id_usuario, token, tipo } = data;
 
             localStorage.setItem('userId', id_usuario);
-            localStorage.setItem('token', token);
             localStorage.setItem('userType', tipo);
 
             setCookie('token', token, { path: '/' });
-            setCookie('userId', id_usuario, { path: '/' });
-            setCookie('userType', tipo, { path: '/' });
 
             if (onLogin) onLogin();
 
