@@ -163,6 +163,7 @@ function App() {
         localStorage.removeItem('token');
         localStorage.removeItem('userId');
         setLoggedIn(false);
+        window.location.reload();
     };
 
     const openModal = (course) => {
@@ -597,7 +598,8 @@ const Modal = ({ course, closeModal, onUpload }) => {
         fetch(`http://localhost:8080/courses/${course.id_curso}/comments`)
             .then(response => response.json())
             .then(data => {
-                setComments(data.comentarios);
+                const comentarios = data.comentarios || []; // Asegúrate de que sea un array vacío si no hay comentarios
+                setComments(comentarios);
                 setIsCommentsModalOpen(true);
             })
             .catch(error => {
@@ -648,6 +650,9 @@ const Modal = ({ course, closeModal, onUpload }) => {
             <Dialog open={isCommentsModalOpen} onClose={closeCommentsModal} className="modal-dialog">
                 <DialogTitle className="modal-title">Comentarios del Curso</DialogTitle>
                 <DialogContent className="modal-content">
+                    {comments.length===0 ? (
+                        <Typography style={{color: 'red' }}>No hay comentarios realizados</Typography>
+                    ):(
                     <List>
                         {comments.map((comment, index) => (
                             <ListItem key={index}>
@@ -655,6 +660,7 @@ const Modal = ({ course, closeModal, onUpload }) => {
                             </ListItem>
                         ))}
                     </List>
+                        )}
                 </DialogContent>
                 <DialogActions className="modal-actions">
                     <Button onClick={closeCommentsModal} color="primary" className="modal-button">Cerrar</Button>
