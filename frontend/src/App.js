@@ -429,25 +429,9 @@ function App() {
                             fullWidth
                         />
                         <TextField
-                            label="Fecha de Inicio"
-                            type="date"
-                            value={newCourse.FechaInicio}
-                            onChange={(e) => setNewCourse({ ...newCourse, FechaInicio: e.target.value })}
-                            fullWidth
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                        />
-                        <TextField
                             label="Categoría"
                             value={newCourse.Categoria}
                             onChange={(e) => setNewCourse({ ...newCourse, Categoria: e.target.value })}
-                            fullWidth
-                        />
-                        <TextField
-                            label="Archivo"
-                            value={newCourse.Archivo}
-                            onChange={(e) => setNewCourse({ ...newCourse, Archivo: e.target.value })}
                             fullWidth
                         />
                         <TextField
