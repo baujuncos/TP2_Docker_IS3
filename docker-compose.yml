@@ -9,7 +9,7 @@ services:
       - DB_HOST=db
       - DB_PORT=3306
       - DB_USER=root
-      - DB_PASSWORD=RaTa8855
+      - DB_PASSWORD=ladrillo753
       - DB_NAME=pbbv
     depends_on:
       - db
@@ -29,7 +29,7 @@ services:
   db:
     image: mysql:5.7
     environment:
-      MYSQL_ROOT_PASSWORD: RaTa8855
+      MYSQL_ROOT_PASSWORD: ladrillo753
       MYSQL_DATABASE: pbbv
     ports:
       - "3306:3306"

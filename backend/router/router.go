@@ -49,6 +49,7 @@ func SetupRouter() *gin.Engine {
 	r.GET("/cursos", cursos.GetAllCursos)   // Obtiene TODOS los cursos, REGULARIDAD
 	r.GET("/files", files.ListFiles)        // Obtener lista de archivos subidos
 
+	// Configurar el servidor para servir archivos estáticos desde el directorio "./uploads"
 	r.Static("/uploads", "./uploads")
 
 	r.DELETE("/cursos/:id", cursos.DeleteCurso) // Eliminar Cursos
