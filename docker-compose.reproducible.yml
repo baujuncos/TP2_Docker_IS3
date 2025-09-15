@@ -1,0 +1,101 @@
+# docker-compose.yml (reproducible)
+services:
+  # ====== DB QA ======
+  db-qa:
+    image: mysql:5.7
+    container_name: ${PROJECT_PREFIX}_db_qa
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DB_NAME_QA}
+      TZ: ${TZ}
+    ports:
+      - "${DB_QA_HOST_PORT}:3306"
+    volumes:
+      - mysqldata-qa:/var/lib/mysql
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -p$$MYSQL_ROOT_PASSWORD --silent || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    networks: [qaprod-net]
+
+  # ====== DB PROD ======
+  db-prod:
+    image: mysql:5.7
+    container_name: ${PROJECT_PREFIX}_db_prod
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DB_NAME_PROD}
+      TZ: ${TZ}
+    ports:
+      - "${DB_PROD_HOST_PORT}:3306"
+    volumes:
+      - mysqldata-prod:/var/lib/mysql
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -p$$MYSQL_ROOT_PASSWORD --silent || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    networks: [qaprod-net]
+
+  # ====== BACKEND QA ======
+  backend-qa:
+    image: baujuncos/tp2-backend:v1.0     # imagen versionada
+    container_name: ${PROJECT_PREFIX}_backend_qa
+    depends_on:
+      db-qa:
+        condition: service_healthy
+    environment:
+      DB_HOST: db-qa
+      DB_PORT: 3306
+      DB_USER: ${MYSQL_USER}
+      DB_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      DB_NAME: ${MYSQL_DB_NAME_QA}
+      DB_DSN: "${MYSQL_USER}:${MYSQL_ROOT_PASSWORD}@tcp(db-qa:3306)/${MYSQL_DB_NAME_QA}?parseTime=true&loc=Local"
+      APP_ENV: QA
+      LOG_LEVEL: debug
+      TZ: ${TZ}
+    ports:
+      - "${BACKEND_QA_HOST_PORT}:8080"
+    networks: [qaprod-net]
+
+  # ====== BACKEND PROD ======
+  backend-prod:
+    image: baujuncos/tp2-backend:v1.0     # MISMA imagen que QA
+    container_name: ${PROJECT_PREFIX}_backend_prod
+    depends_on:
+      db-prod:
+        condition: service_healthy
+    environment:
+      DB_HOST: db-prod
+      DB_PORT: 3306
+      DB_USER: ${MYSQL_USER}
+      DB_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      DB_NAME: ${MYSQL_DB_NAME_PROD}
+      DB_DSN: "${MYSQL_USER}:${MYSQL_ROOT_PASSWORD}@tcp(db-prod:3306)/${MYSQL_DB_NAME_PROD}?parseTime=true&loc=Local"
+      APP_ENV: PROD
+      LOG_LEVEL: info
+      TZ: ${TZ}
+    ports:
+      - "${BACKEND_PROD_HOST_PORT}:8080"
+    networks: [qaprod-net]
+
+  # FRONTEND apuntando a QA (opcional)
+  frontend:
+    image: baujuncos/tp2-frontend:v1.0
+    container_name: ${PROJECT_PREFIX}_frontend
+    depends_on: [backend-qa]
+    # Si tu front usa VITE_API_URL de build, documentalo en README.
+    # Si usás proxy Nginx a backend-qa, no hace falta env aquí.
+    ports:
+      - "${FRONTEND_HOST_PORT}:80"
+    networks: [qaprod-net]
+
+volumes:
+  mysqldata-qa:
+  mysqldata-prod:
+
+networks:
+  qaprod-net: {}
